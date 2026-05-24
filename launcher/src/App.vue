@@ -185,9 +185,11 @@
           <div class="service-card-inner">
             <div class="service-icon service-icon-blue">
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
-                <ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" stroke-width="2"/>
-                <path d="M3 5v6c0 1.66 4.03 3 9 3s9-1.34 9-3V5M3 11v6c0 1.66 4.03 3 9 3s9-1.34 9-3v-6"
-                  stroke="currentColor" stroke-width="2"/>
+                <rect x="3" y="3" width="18" height="7" rx="2" stroke="currentColor" stroke-width="2"/>
+                <rect x="3" y="14" width="18" height="7" rx="2" stroke="currentColor" stroke-width="2"/>
+                <circle cx="7" cy="6.5" r="0.8" fill="currentColor"/>
+                <circle cx="7" cy="17.5" r="0.8" fill="currentColor"/>
+                <path d="M11 6.5h7M11 17.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               </svg>
             </div>
             <div class="service-text">
@@ -237,7 +239,7 @@
           </div>
           <div class="info-content">
             <div class="info-title">数据安全</div>
-            <div class="info-text">API Key、密码、Token 等敏感配置仅保存在浏览器本地，不写入项目目录</div>
+            <div class="info-text">API Key、密码、Token 等敏感配置仅保存在浏览器本地</div>
           </div>
         </div>
         <div class="info-card info-card-blue">
@@ -267,11 +269,23 @@
 
       <!-- 底部 -->
       <footer class="footer-bar">
-        <span class="footer-copyright">© 2026 青云制作 · 彭明航</span>
+        <span class="footer-copyright">© {{ currentYear }} 青云制作 · 彭明航</span>
         <span class="footer-separator"></span>
         <a class="footer-link" @click="openGithub">GitHub 仓库</a>
         <span class="footer-dot">·</span>
-        <a class="footer-link" @click="showLicense">开源协议</a>
+        <a class="footer-link footer-bilibili" @click="openBilibili">
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" style="vertical-align: -1px; margin-right: 3px">
+            <path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.789 1.894v7.52c.018.764.28 1.395.789 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.789-1.893v-7.52c-.018-.765-.28-1.396-.789-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.387-.947.258-.257.574-.386.946-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.387-.947.258-.257.574-.386.946-.386z"/>
+          </svg>
+          B站主页
+        </a>
+        <span class="footer-dot">·</span>
+        <a class="footer-link footer-qq" @click="copyQQGroup" :title="`点击复制 QQ 群号 ${qqGroupNumber}`">
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" style="vertical-align: -1px; margin-right: 3px">
+            <path d="M21.395 15.035a39.548 39.548 0 0 0-.803-2.264l-1.079-2.695c.001-.032.014-.562.014-.836C19.527 4.692 17.247 0 12 0S4.473 4.692 4.473 9.24c0 .274.013.804.014.836l-1.08 2.695a39.547 39.547 0 0 0-.802 2.264c-1.021 3.283-.69 4.643-.438 4.673.54.065 2.103-2.472 2.103-2.472 0 1.469.756 3.387 2.394 4.771-.612.188-1.363.479-1.845.835-.434.32-.378.646-.301.778.339.58 5.821.37 7.482.184 1.66.186 7.142.396 7.481-.184.077-.132.134-.458-.3-.778-.483-.356-1.234-.647-1.846-.835 1.638-1.384 2.394-3.302 2.394-4.771 0 0 1.563 2.537 2.103 2.472.251-.03.581-1.39-.438-4.673z"/>
+          </svg>
+          QQ 群 {{ qqGroupNumber }}
+        </a>
         <span class="footer-dot">·</span>
         <a class="footer-link footer-heart" @click="showSponsor">
           <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" style="vertical-align: -1px; margin-right: 3px">
@@ -297,7 +311,7 @@
               </div>
               <div class="modal-banner-text">
                 <div class="modal-banner-title">支持 WebRPA 持续开发</div>
-                <div class="modal-banner-sub">独立开发者 · 业余维护 · 为爱发电</div>
+                <div class="modal-banner-sub">独立学生开发者 · 个人使用完全免费 · 为爱发电</div>
               </div>
             </div>
             <button class="modal-close" @click="showSponsorModal = false">
@@ -309,16 +323,16 @@
           <div class="modal-body">
             <div class="sponsor-msg">
               <p>嗨 <span class="emoji">👋</span>，能看到这里说明 WebRPA 已经为你解决了一些问题。</p>
-              <p>这个项目由一名独立开发者业余时间维护，<strong>没有任何商业模式、广告、付费墙</strong>，完全免费且开源。</p>
+              <p>WebRPA 由独立学生开发者开发并维护，<strong>个人使用完全免费</strong>，没有任何广告或付费墙。</p>
               <div class="sponsor-highlight">
                 <span class="sponsor-highlight-bar"></span>
                 <span>如果它真的让你的工作变得轻松了一点点，希望你能请作者喝杯咖啡，让这个项目能继续走下去。</span>
               </div>
               <p class="sponsor-thanks">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align: -2px; margin-right: 4px">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
-                <strong>无论金额多少</strong>，每一位赞助者的名字都会被收录到下个版本的 README，作为永久的感谢。
+                <span>每一位赞助者的名字（无论金额多少）都会被收录到下个版本的 README 致谢名单，作为永久的感谢。</span>
               </p>
             </div>
 
@@ -327,22 +341,10 @@
                 <div class="qr-frame">
                   <img :src="wechatQr" alt="微信" />
                 </div>
-                <div class="qr-foot">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                    <path d="M8.69 2C4.31 2 .75 4.94.75 8.57c0 2.05 1.13 3.87 2.91 5.07-.13.5-.5 1.83-.57 2.11-.09.34.13.34.27.25.11-.07 1.79-1.16 2.5-1.62.69.15 1.41.23 2.16.23.4 0 .8-.02 1.19-.07-.25-.71-.39-1.46-.39-2.24 0-3.4 3.32-6.18 7.42-6.18.27 0 .54.02.81.04C16.18 3.65 12.74 2 8.69 2z"/>
-                  </svg>
-                  <span>微信赞赏</span>
-                </div>
               </div>
               <div class="qr-card qr-card-alipay">
                 <div class="qr-frame">
                   <img :src="alipayQr" alt="支付宝" />
-                </div>
-                <div class="qr-foot">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                    <path d="M22.97 17.66s-3.5-1.18-5.4-2.06c1.13-1.96 2-4.31 2.46-6.97h-5.16V7h6.32V5.92h-6.32V3.21h-2.58c-.45 0-.45.45-.45.45v2.26H5.5V7h6.34v1.63H6.61v1.07h10.39c-.36 1.61-.95 3.09-1.74 4.35-4.4-1.46-9.07-2.21-12.04-1.43-1.9.5-3.12 1.34-3.84 2.22-3.31 4.06-.92 10.23 6.13 10.23 4.17 0 8.19-2.34 11.32-6.21 4.65 2.25 14.35 6.05 14.35 6.05v-3.45c0-.97-.5-1.39-1.21-1.79z"/>
-                  </svg>
-                  <span>支付宝赞助</span>
                 </div>
               </div>
             </div>
@@ -350,7 +352,7 @@
             <div class="sponsor-note">
               <div class="note-line">
                 <span class="note-tag">备注</span>
-                <span>填写你的昵称或 GitHub 用户名，将被收录到下个版本的 README 致谢名单</span>
+                <span>备注你的昵称或 GitHub 用户名，将被收录到下个版本的 README 致谢名单</span>
               </div>
               <div class="note-line">
                 <span class="note-tag">联系</span>
@@ -391,8 +393,10 @@
               <div class="cfg-block-head">
                 <span class="cfg-block-icon cfg-block-icon-blue">
                   <svg viewBox="0 0 24 24" width="14" height="14" fill="none">
-                    <ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" stroke-width="2"/>
-                    <path d="M3 5v6c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke="currentColor" stroke-width="2"/>
+                    <rect x="3" y="3" width="18" height="7" rx="2" stroke="currentColor" stroke-width="2"/>
+                    <rect x="3" y="14" width="18" height="7" rx="2" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="7" cy="6.5" r="0.8" fill="currentColor"/>
+                    <circle cx="7" cy="17.5" r="0.8" fill="currentColor"/>
                   </svg>
                 </span>
                 <span class="cfg-block-title">后端服务</span>
@@ -498,6 +502,11 @@ const showSponsorModal = ref(false)
 const showConfigModal = ref(false)
 const saving = ref(false)
 const statusCheckInterval = ref(null)
+
+// 动态年份
+const currentYear = new Date().getFullYear()
+// QQ 技术交流群号
+const qqGroupNumber = '115069513'
 
 const configForm = ref({
   backend: { host: '0.0.0.0', port: 8000, reload: false },
@@ -651,6 +660,15 @@ const openBrowser = async () => {
 }
 
 const openGithub = () => invoke('open_browser', { url: 'https://github.com/pmh1314520/WebRPA' })
+const openBilibili = () => invoke('open_browser', { url: 'https://space.bilibili.com/1102546347' })
+const copyQQGroup = async () => {
+  try {
+    await navigator.clipboard.writeText(qqGroupNumber)
+    showToast(`已复制 QQ 群号 ${qqGroupNumber}`, 'success')
+  } catch {
+    showToast(`QQ 群号：${qqGroupNumber}`, 'info', 4000)
+  }
+}
 const showSponsor = () => { showSponsorModal.value = true }
 const showLicense = () => invoke('open_browser', { url: 'https://github.com/pmh1314520/WebRPA/blob/main/LICENSE' })
 
@@ -1497,6 +1515,16 @@ body {
   align-items: center;
 }
 .footer-heart:hover { color: var(--c-pink-700); }
+.footer-bilibili {
+  display: inline-flex;
+  align-items: center;
+}
+.footer-bilibili:hover { color: #fb7299; }
+.footer-qq {
+  display: inline-flex;
+  align-items: center;
+}
+.footer-qq:hover { color: #12b7f5; }
 
 /* ============================================================
    弹窗（mask 必须不透明）
@@ -1649,14 +1677,19 @@ body {
 .sponsor-thanks {
   display: flex;
   align-items: flex-start;
+  gap: 6px;
   font-size: 11.5px;
   color: var(--c-text-3);
   margin-top: 10px;
   padding-top: 10px;
   border-top: 1px dashed var(--c-border);
-  line-height: 1.5;
+  line-height: 1.6;
 }
-.sponsor-thanks svg { color: var(--c-pink-500); flex-shrink: 0; }
+.sponsor-thanks svg {
+  color: var(--c-pink-500);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
 
 .qr-wrap {
   display: grid;
