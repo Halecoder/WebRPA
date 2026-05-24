@@ -437,6 +437,28 @@
               </div>
             </div>
 
+            <div class="cfg-block">
+              <div class="cfg-block-head">
+                <span class="cfg-block-icon cfg-block-icon-pink">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                      stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="cfg-block-title">启动器偏好</span>
+              </div>
+              <div class="cfg-row cfg-row-toggle">
+                <div class="cfg-toggle-text">
+                  <div class="cfg-toggle-title">启动时弹出赞助提示</div>
+                  <div class="cfg-toggle-sub">关闭后不再每次启动都弹窗，仍可通过右上角"支持作者"打开</div>
+                </div>
+                <label class="cfg-switch" :class="{ on: showSponsorOnStartup }">
+                  <input type="checkbox" v-model="showSponsorOnStartup" />
+                  <span class="cfg-switch-track"><span class="cfg-switch-thumb"></span></span>
+                </label>
+              </div>
+            </div>
+
             <div class="cfg-tips">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none">
                 <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
@@ -505,7 +527,7 @@
 
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import wechatQr from './assets/wechat-qr.png'
@@ -519,6 +541,19 @@ const backendRunning = ref(false)
 const frontendRunning = ref(false)
 const showSponsorModal = ref(false)
 const showConfigModal = ref(false)
+// 是否在启动器启动时自动弹出赞助提示（持久化在 localStorage，默认开启）
+const SPONSOR_AUTO_KEY = 'webrpa.launcher.sponsorAutoShow'
+const showSponsorOnStartup = ref(
+  (() => {
+    try {
+      const v = localStorage.getItem(SPONSOR_AUTO_KEY)
+      return v === null ? true : v === '1'
+    } catch { return true }
+  })()
+)
+watch(showSponsorOnStartup, (v) => {
+  try { localStorage.setItem(SPONSOR_AUTO_KEY, v ? '1' : '0') } catch {}
+})
 const saving = ref(false)
 const closing = ref(false)
 const closingMessage = ref('正在关闭服务，请稍候…')
@@ -758,7 +793,9 @@ onMounted(async () => {
   await checkServiceStatus()
   startStatusCheck()
   setTimeout(checkUpdate, 1500)
-  setTimeout(() => { showSponsorModal.value = true }, 800)
+  if (showSponsorOnStartup.value) {
+    setTimeout(() => { showSponsorModal.value = true }, 800)
+  }
 })
 
 onUnmounted(() => {
@@ -1848,6 +1885,66 @@ body {
 }
 .cfg-block-icon-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
 .cfg-block-icon-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.cfg-block-icon-pink { background: linear-gradient(135deg, #ec4899, #db2777); }
+
+/* 偏好开关行：左文本块 + 右开关 */
+.cfg-row-toggle {
+  align-items: center;
+  gap: 12px;
+}
+.cfg-toggle-text {
+  flex: 1;
+  min-width: 0;
+}
+.cfg-toggle-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text-1);
+  margin-bottom: 2px;
+}
+.cfg-toggle-sub {
+  font-size: 11.5px;
+  color: var(--c-text-3);
+  line-height: 1.5;
+}
+.cfg-switch {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 40px;
+  height: 22px;
+  cursor: pointer;
+}
+.cfg-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+.cfg-switch-track {
+  position: absolute;
+  inset: 0;
+  background: var(--c-border);
+  border-radius: 11px;
+  transition: background 180ms ease;
+}
+.cfg-switch.on .cfg-switch-track {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+}
+.cfg-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  transition: transform 180ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+.cfg-switch.on .cfg-switch-thumb {
+  transform: translateX(18px);
+}
 .cfg-block-title {
   font-size: 12.5px;
   font-weight: 700;
