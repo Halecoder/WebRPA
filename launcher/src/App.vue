@@ -1947,13 +1947,21 @@ body {
   color: var(--c-text-3);
   line-height: 1.5;
 }
-.cfg-switch {
+.cfg-switch,
+.cfg-row .cfg-switch,
+.cfg-row label.cfg-switch {
   position: relative;
   display: inline-block;
   flex-shrink: 0;
+  flex-grow: 0;
   width: 36px;
+  min-width: 36px;
+  max-width: 36px;
   height: 20px;
   cursor: pointer;
+  margin: 0;
+  padding: 0;
+  /* 覆盖 .cfg-row label 的 64px 默认宽度 */
 }
 .cfg-switch input {
   opacity: 0;
