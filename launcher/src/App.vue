@@ -439,13 +439,23 @@
 
             <div class="cfg-block">
               <div class="cfg-block-head">
-                <span class="cfg-block-icon cfg-block-icon-pink">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                      stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <span class="cfg-block-icon cfg-block-icon-indigo">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                   </svg>
                 </span>
                 <span class="cfg-block-title">启动器偏好</span>
+              </div>
+              <div class="cfg-row cfg-row-toggle">
+                <div class="cfg-toggle-text">
+                  <div class="cfg-toggle-title">启动时自动启动前后端服务</div>
+                  <div class="cfg-toggle-sub">打开启动器后立即拉起 API 与编辑器，无需点击启动按钮</div>
+                </div>
+                <label class="cfg-switch" :class="{ on: autoStartServices }">
+                  <input type="checkbox" v-model="autoStartServices" />
+                  <span class="cfg-switch-track"><span class="cfg-switch-thumb"></span></span>
+                </label>
               </div>
               <div class="cfg-row cfg-row-toggle">
                 <div class="cfg-toggle-text">
@@ -553,6 +563,20 @@ const showSponsorOnStartup = ref(
 )
 watch(showSponsorOnStartup, (v) => {
   try { localStorage.setItem(SPONSOR_AUTO_KEY, v ? '1' : '0') } catch {}
+})
+
+// 是否在启动器启动时自动拉起前后端服务（默认关闭）
+const AUTO_START_KEY = 'webrpa.launcher.autoStartServices'
+const autoStartServices = ref(
+  (() => {
+    try {
+      const v = localStorage.getItem(AUTO_START_KEY)
+      return v === '1'
+    } catch { return false }
+  })()
+)
+watch(autoStartServices, (v) => {
+  try { localStorage.setItem(AUTO_START_KEY, v ? '1' : '0') } catch {}
 })
 const saving = ref(false)
 const closing = ref(false)
@@ -795,6 +819,15 @@ onMounted(async () => {
   setTimeout(checkUpdate, 1500)
   if (showSponsorOnStartup.value) {
     setTimeout(() => { showSponsorModal.value = true }, 800)
+  }
+  if (autoStartServices.value) {
+    // 给状态检查 + 弹窗一点时间，再去自动启动
+    setTimeout(() => {
+      // 已经全部在跑就不再触发，避免提示"所有服务都已在运行"打扰用户
+      if (!backendRunning.value || !frontendRunning.value) {
+        startServices()
+      }
+    }, 1200)
   }
 })
 
@@ -1886,11 +1919,18 @@ body {
 .cfg-block-icon-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
 .cfg-block-icon-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
 .cfg-block-icon-pink { background: linear-gradient(135deg, #ec4899, #db2777); }
+.cfg-block-icon-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
 
 /* 偏好开关行：左文本块 + 右开关 */
 .cfg-row-toggle {
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  padding: 6px 0;
+}
+.cfg-row-toggle:not(:last-child) {
+  border-bottom: 1px dashed var(--c-border);
+  margin-bottom: 6px;
+  padding-bottom: 10px;
 }
 .cfg-toggle-text {
   flex: 1;
@@ -1900,7 +1940,7 @@ body {
   font-size: 13px;
   font-weight: 600;
   color: var(--c-text-1);
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 .cfg-toggle-sub {
   font-size: 11.5px;
@@ -1911,8 +1951,8 @@ body {
   position: relative;
   display: inline-block;
   flex-shrink: 0;
-  width: 40px;
-  height: 22px;
+  width: 36px;
+  height: 20px;
   cursor: pointer;
 }
 .cfg-switch input {
@@ -1925,7 +1965,7 @@ body {
   position: absolute;
   inset: 0;
   background: var(--c-border);
-  border-radius: 11px;
+  border-radius: 10px;
   transition: background 180ms ease;
 }
 .cfg-switch.on .cfg-switch-track {
@@ -1935,15 +1975,15 @@ body {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
   transition: transform 180ms cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 .cfg-switch.on .cfg-switch-thumb {
-  transform: translateX(18px);
+  transform: translateX(16px);
 }
 .cfg-block-title {
   font-size: 12.5px;
