@@ -15,11 +15,11 @@
         "fullscreen": false,
         "resizable": true,
         "title": "WebRPA 启动器",
-        "width": 1000,
-        "height": 750,
-        "minWidth": 900,
-        "minHeight": 650,
-        "decorations": true,
+        "width": 760,
+        "height": 580,
+        "minWidth": 680,
+        "minHeight": 520,
+        "decorations": false,
         "transparent": false,
         "center": true
       }
