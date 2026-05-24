@@ -462,6 +462,24 @@
       </div>
     </transition>
 
+    <!-- 关闭中遮罩 -->
+    <transition name="closing">
+      <div v-if="closing" class="closing-mask">
+        <div class="closing-card">
+          <div class="closing-spinner">
+            <span class="closing-spinner-ring"></span>
+            <span class="closing-spinner-ring"></span>
+            <span class="closing-spinner-ring"></span>
+          </div>
+          <div class="closing-title">正在关闭 WebRPA 启动器</div>
+          <div class="closing-sub">{{ closingMessage }}</div>
+          <div class="closing-progress">
+            <span class="closing-progress-bar"></span>
+          </div>
+        </div>
+      </div>
+    </transition>
+
     <!-- Toast -->
     <transition name="toast">
       <div v-if="toast.show" class="toast" :class="`toast-${toast.type}`">
@@ -501,6 +519,8 @@ const frontendRunning = ref(false)
 const showSponsorModal = ref(false)
 const showConfigModal = ref(false)
 const saving = ref(false)
+const closing = ref(false)
+const closingMessage = ref('正在关闭服务，请稍候…')
 const statusCheckInterval = ref(null)
 
 // 动态年份
@@ -543,8 +563,27 @@ const minimize = async () => {
   try { await getCurrentWindow().minimize() } catch (e) { console.error(e) }
 }
 const closeApp = async () => {
-  try { await invoke('stop_services') } catch {}
-  try { await getCurrentWindow().close() } catch (e) { console.error(e) }
+  // 防止重复点击
+  if (closing.value) return
+  closing.value = true
+  closingMessage.value = '正在关闭后端与前端服务…'
+  try {
+    // 停止服务（这一步可能耗时 1-3 秒）
+    await invoke('stop_services')
+    closingMessage.value = '服务已停止，正在退出启动器…'
+  } catch (err) {
+    console.error('stop_services 出错:', err)
+    closingMessage.value = '正在退出启动器…'
+  }
+  // 给用户一个能看见提示的最短停留时间，避免一闪而过
+  await new Promise((r) => setTimeout(r, 350))
+  try {
+    await getCurrentWindow().close()
+  } catch (e) {
+    console.error(e)
+    // 关闭失败时回退状态
+    closing.value = false
+  }
 }
 
 // 服务状态轮询
@@ -1937,6 +1976,115 @@ body {
   color: var(--c-blue-700);
 }
 .toast-info .toast-icon { color: var(--c-blue-500); }
+
+/* ============================================================
+   关闭中遮罩
+   ============================================================ */
+.closing-mask {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(11, 20, 38, 0.85), rgba(29, 78, 216, 0.78));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  padding: 20px;
+}
+.closing-card {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  padding: 28px 28px 20px;
+  background: white;
+  border-radius: 14px;
+  box-shadow:
+    0 25px 60px rgba(11, 20, 38, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* 三圈旋转 spinner */
+.closing-spinner {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+}
+.closing-spinner-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--c-blue-500);
+  animation: closing-spin 1.1s cubic-bezier(0.5, 0.15, 0.5, 0.85) infinite;
+}
+.closing-spinner-ring:nth-child(2) {
+  inset: 8px;
+  border-top-color: var(--c-purple-500);
+  animation-duration: 1.5s;
+  animation-direction: reverse;
+}
+.closing-spinner-ring:nth-child(3) {
+  inset: 16px;
+  border-top-color: var(--c-pink-500);
+  animation-duration: 0.9s;
+}
+@keyframes closing-spin {
+  to { transform: rotate(360deg); }
+}
+
+.closing-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text-1);
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.closing-sub {
+  font-size: 12px;
+  color: var(--c-text-3);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.closing-progress {
+  width: 100%;
+  height: 3px;
+  background: var(--c-bg-base);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.closing-progress-bar {
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--c-blue-500), var(--c-purple-500), transparent);
+  background-size: 200% 100%;
+  animation: closing-progress-flow 1.4s ease-in-out infinite;
+}
+@keyframes closing-progress-flow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+/* 过渡 */
+.closing-enter-active,
+.closing-leave-active { transition: opacity 220ms ease; }
+.closing-enter-active .closing-card,
+.closing-leave-active .closing-card {
+  transition: transform 240ms cubic-bezier(0.25, 1, 0.5, 1), opacity 200ms;
+}
+.closing-enter-from,
+.closing-leave-to { opacity: 0; }
+.closing-enter-from .closing-card,
+.closing-leave-to .closing-card {
+  opacity: 0;
+  transform: scale(0.92) translateY(8px);
+}
 
 /* ============================================================
    过渡动画
