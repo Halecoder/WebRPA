@@ -901,13 +901,18 @@ body {
   align-items: baseline;
   font-weight: 800;
   font-size: 22px;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.01em;
   font-style: italic;
+  /* 斜体字母的右上角会突出 em-box，给一点右侧呼吸空间避免被切 */
+  padding-right: 4px;
+  overflow: visible;
 }
 .brand-letter {
   display: inline-block;
   color: white;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  /* 单独给斜体字母右侧留出尖角空间，否则 W → e → b 之间会有切角错觉 */
+  padding-right: 1px;
 }
 .brand-letter-1, .brand-letter-2, .brand-letter-3 {
   background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
@@ -918,13 +923,14 @@ body {
 }
 .brand-pill {
   display: inline-flex;
-  margin-left: 4px;
-  padding: 1px 7px 2px;
+  margin-left: 6px;
+  padding: 2px 10px 3px 9px;
   background: rgba(255, 255, 255, 0.9);
-  border-radius: 5px;
+  border-radius: 6px;
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  overflow: visible;
 }
 .brand-pill .brand-letter {
   background: linear-gradient(135deg, #1d4ed8, #7c3aed);
@@ -934,6 +940,11 @@ body {
   color: transparent;
   text-shadow: none;
   font-size: 18px;
+  /* pill 内的字母也给一点右 padding，否则 P 的尖角和 A 的右上角会顶到 pill 边 */
+  padding-right: 2px;
+}
+.brand-pill .brand-letter:last-child {
+  padding-right: 0;
 }
 
 .brand-meta {
