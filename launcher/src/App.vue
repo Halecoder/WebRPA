@@ -332,7 +332,7 @@
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
-                <span>每一位赞助者的名称（无论金额多少）我都会手动一个个添加到下个版本的 README 文档中以表感谢！</span>
+                <span>每一位赞助者的名称（无论金额多少）我都会手动依次添加到下个版本的 README 文档中以表感谢！</span>
               </p>
             </div>
 
@@ -350,10 +350,10 @@
             </div>
 
             <button class="ifdian-btn" @click="openIfdian">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
               </svg>
-              <span>也可以通过爱发电平台支持</span>
+              <span>您也可以通过"爱发电"平台持续支持 WebRPA 的开发工作</span>
               <svg viewBox="0 0 24 24" width="12" height="12" fill="none" style="margin-left:auto">
                 <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -362,7 +362,7 @@
             <div class="sponsor-note">
               <div class="note-line">
                 <span class="note-tag">备注</span>
-                <span>赞助时建议您带上自己的名称备注，这样能更方便我收录到下个版本的 README 文档中</span>
+                <span>赞助时请备注名称，这样能更方便我收录到下个版本的 README 文档中</span>
               </div>
               <div class="note-line">
                 <span class="note-tag">联系</span>
