@@ -332,35 +332,57 @@
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
-                <span>每一位赞助者的名字（无论金额多少）都会被收录到下个版本的 README 致谢名单，作为永久的感谢。</span>
+                <span>每一位赞助者的名称（无论金额多少）我都会手动一个个添加到下个版本的 README 文档中以表感谢！</span>
               </p>
             </div>
 
             <div class="qr-wrap">
-              <div class="qr-card qr-card-wechat">
+              <div class="qr-card qr-card-wechat" @click="enlargedQr = wechatQr">
                 <div class="qr-frame">
                   <img :src="wechatQr" alt="微信" />
                 </div>
               </div>
-              <div class="qr-card qr-card-alipay">
+              <div class="qr-card qr-card-alipay" @click="enlargedQr = alipayQr">
                 <div class="qr-frame">
                   <img :src="alipayQr" alt="支付宝" />
                 </div>
               </div>
             </div>
 
+            <button class="ifdian-btn" @click="openIfdian">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/>
+              </svg>
+              <span>也可以通过爱发电平台支持</span>
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" style="margin-left:auto">
+                <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
             <div class="sponsor-note">
               <div class="note-line">
                 <span class="note-tag">备注</span>
-                <span>备注你的昵称或 GitHub 用户名，将被收录到下个版本的 README 致谢名单</span>
+                <span>赞助时建议您带上自己的名称备注，这样能更方便我收录到下个版本的 README 文档中</span>
               </div>
               <div class="note-line">
                 <span class="note-tag">联系</span>
-                <span>收到赞助后会通过爱发电私信联系你确认收录信息（可选）</span>
+                <span>若您对 WebRPA 有任何疑问，可以添加开发者的 QQ：2124691573</span>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </transition>
+
+    <!-- 二维码放大查看 -->
+    <transition name="modal">
+      <div v-if="enlargedQr" class="qr-zoom-mask" @click="enlargedQr = ''">
+        <img :src="enlargedQr" class="qr-zoom-img" @click.stop />
+        <button class="qr-zoom-close" @click="enlargedQr = ''">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+            <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </button>
       </div>
     </transition>
 
@@ -550,6 +572,7 @@ const starting = ref(false)
 const backendRunning = ref(false)
 const frontendRunning = ref(false)
 const showSponsorModal = ref(false)
+const enlargedQr = ref('')
 const showConfigModal = ref(false)
 // 是否在启动器启动时自动弹出赞助提示（持久化在 localStorage，默认开启）
 const SPONSOR_AUTO_KEY = 'webrpa.launcher.sponsorAutoShow'
@@ -760,6 +783,7 @@ const openBrowser = async () => {
 
 const openGithub = () => invoke('open_browser', { url: 'https://github.com/pmh1314520/WebRPA' })
 const openBilibili = () => invoke('open_browser', { url: 'https://space.bilibili.com/1102546347' })
+const openIfdian = () => invoke('open_browser', { url: 'https://ifdian.net/a/qypmh' })
 const copyQQGroup = async () => {
   try {
     await navigator.clipboard.writeText(qqGroupNumber)
@@ -1886,6 +1910,80 @@ body {
   color: var(--c-text-3);
 }
 .note-line span:last-child { color: var(--c-text-3); line-height: 1.5; }
+
+/* 二维码可点击放大 */
+.qr-card { cursor: zoom-in; transition: transform 180ms ease, box-shadow 180ms ease; }
+.qr-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px -6px rgba(15, 23, 42, 0.15);
+}
+
+/* 爱发电入口按钮 */
+.ifdian-btn {
+  -webkit-app-region: no-drag;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin: 12px 0;
+  background: linear-gradient(135deg, #ff7878, #ff4d4d);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: filter 160ms ease, transform 160ms ease;
+  box-shadow: 0 2px 8px rgba(255, 77, 77, 0.25);
+}
+.ifdian-btn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(255, 77, 77, 0.35);
+}
+.ifdian-btn:active { transform: translateY(0); }
+
+/* 二维码放大遮罩 */
+.qr-zoom-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: zoom-out;
+  -webkit-app-region: no-drag;
+  backdrop-filter: blur(6px);
+}
+.qr-zoom-img {
+  max-width: 80vw;
+  max-height: 80vh;
+  border-radius: 14px;
+  background: white;
+  padding: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  cursor: default;
+}
+.qr-zoom-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 160ms ease;
+  -webkit-app-region: no-drag;
+}
+.qr-zoom-close:hover { background: rgba(255, 255, 255, 0.3); }
 
 
 /* ============================================================
