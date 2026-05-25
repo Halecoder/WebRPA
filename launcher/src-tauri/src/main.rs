@@ -995,6 +995,16 @@ fn main() {
             backend_pid: Arc::new(Mutex::new(None)),
             frontend_pid: Arc::new(Mutex::new(None)),
         })
+        .setup(|app| {
+            // 主动设置主窗口图标，解决 decorations:false 时任务栏显示默认图标的问题
+            if let Some(window) = app.get_webview_window("main") {
+                // 用 default_window_icon (从 tauri.conf.json 的 icon 列表里编译进来的)
+                if let Some(icon) = app.default_window_icon() {
+                    let _ = window.set_icon(icon.clone());
+                }
+            }
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             read_config,
             save_config,
