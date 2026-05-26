@@ -286,14 +286,14 @@
         </a>
         <span class="footer-dot">·</span>
         <span class="qq-wrapper" @mouseenter="showQQAnswer = true" @mouseleave="showQQAnswer = false">
-          <a class="footer-link footer-qq" @click="joinQQGroup" :title="`点击跳转 QQ 加群页面（群号 ${qqGroupNumber}）`">
+          <a class="footer-link footer-qq" @click="joinQQGroup">
             <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" style="vertical-align: -1px; margin-right: 3px">
               <path d="M21.395 15.035a39.548 39.548 0 0 0-.803-2.264l-1.079-2.695c.001-.032.014-.562.014-.836C19.527 4.692 17.247 0 12 0S4.473 4.692 4.473 9.24c0 .274.013.804.014.836l-1.08 2.695a39.547 39.547 0 0 0-.802 2.264c-1.021 3.283-.69 4.643-.438 4.673.54.065 2.103-2.472 2.103-2.472 0 1.469.756 3.387 2.394 4.771-.612.188-1.363.479-1.845.835-.434.32-.378.646-.301.778.339.58 5.821.37 7.482.184 1.66.186 7.142.396 7.481-.184.077-.132.134-.458-.3-.778-.483-.356-1.234-.647-1.846-.835 1.638-1.384 2.394-3.302 2.394-4.771 0 0 1.563 2.537 2.103 2.472.251-.03.581-1.39-.438-4.673z"/>
             </svg>
             QQ 群 {{ qqGroupNumber }}
           </a>
           <transition name="qq-answer">
-            <div v-if="showQQAnswer" class="qq-answer-tip" @click.stop="copyQQAnswer" :title="`点击复制：${qqAnswer}`">
+            <div v-if="showQQAnswer" class="qq-answer-tip" @click.stop="copyQQAnswer">
               <span class="qq-answer-label">入群答案</span>
               <span class="qq-answer-value">{{ qqAnswer }}</span>
               <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" class="qq-answer-copy-icon">
