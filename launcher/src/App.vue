@@ -26,12 +26,12 @@
           </div>
         </div>
         <div class="window-controls">
-          <button class="win-btn" @click="minimize" title="最小化">
+          <button class="win-btn" @click="minimize" aria-label="最小化">
             <svg viewBox="0 0 24 24" width="14" height="14">
               <path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
             </svg>
           </button>
-          <button class="win-btn win-btn-close" @click="closeApp" title="关闭">
+          <button class="win-btn win-btn-close" @click="closeApp" aria-label="关闭">
             <svg viewBox="0 0 24 24" width="14" height="14">
               <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
             </svg>
