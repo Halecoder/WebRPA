@@ -286,7 +286,7 @@
         </a>
         <span class="footer-dot">·</span>
         <span class="qq-wrapper" @mouseenter="showQQAnswer = true" @mouseleave="showQQAnswer = false">
-          <a class="footer-link footer-qq" @click="copyQQGroup" :title="`点击复制 QQ 群号 ${qqGroupNumber}`">
+          <a class="footer-link footer-qq" @click="joinQQGroup" :title="`点击跳转 QQ 加群页面（群号 ${qqGroupNumber}）`">
             <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" style="vertical-align: -1px; margin-right: 3px">
               <path d="M21.395 15.035a39.548 39.548 0 0 0-.803-2.264l-1.079-2.695c.001-.032.014-.562.014-.836C19.527 4.692 17.247 0 12 0S4.473 4.692 4.473 9.24c0 .274.013.804.014.836l-1.08 2.695a39.547 39.547 0 0 0-.802 2.264c-1.021 3.283-.69 4.643-.438 4.673.54.065 2.103-2.472 2.103-2.472 0 1.469.756 3.387 2.394 4.771-.612.188-1.363.479-1.845.835-.434.32-.378.646-.301.778.339.58 5.821.37 7.482.184 1.66.186 7.142.396 7.481-.184.077-.132.134-.458-.3-.778-.483-.356-1.234-.647-1.846-.835 1.638-1.384 2.394-3.302 2.394-4.771 0 0 1.563 2.537 2.103 2.472.251-.03.581-1.39-.438-4.673z"/>
             </svg>
@@ -810,6 +810,9 @@ const copyQQGroup = async () => {
   } catch {
     showToast(`QQ 群号：${qqGroupNumber}`, 'info', 4000)
   }
+}
+const joinQQGroup = () => {
+  invoke('open_browser', { url: 'https://qm.qq.com/q/gPLP62XomA' })
 }
 const copyQQAnswer = async () => {
   try {
@@ -1713,21 +1716,29 @@ body {
   align-items: center;
   gap: 6px;
   padding: 6px 10px;
-  background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
+  background: linear-gradient(135deg, #12b7f5 0%, #2086e8 50%, #1a4fc4 100%);
   color: #fff;
   border-radius: 8px;
   font-size: 11px;
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(43, 88, 118, 0.32), 0 1px 0 rgba(255,255,255,0.06) inset;
+  box-shadow:
+    0 4px 14px rgba(18, 183, 245, 0.32),
+    0 8px 24px rgba(26, 79, 196, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.18) inset,
+    0 -1px 0 rgba(26, 79, 196, 0.4) inset;
   z-index: 50;
   user-select: none;
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
 .qq-answer-tip:hover {
   transform: translateX(-50%) translateY(-1px);
-  box-shadow: 0 6px 18px rgba(43, 88, 118, 0.4), 0 1px 0 rgba(255,255,255,0.08) inset;
+  box-shadow:
+    0 6px 18px rgba(18, 183, 245, 0.42),
+    0 10px 28px rgba(26, 79, 196, 0.24),
+    0 1px 0 rgba(255, 255, 255, 0.22) inset,
+    0 -1px 0 rgba(26, 79, 196, 0.45) inset;
 }
 .qq-answer-tip:active {
   transform: translateX(-50%) translateY(0);
@@ -1742,18 +1753,20 @@ body {
   height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 5px solid #4e4376;
+  border-top: 5px solid #1a4fc4;
 }
 .qq-answer-label {
   padding: 1px 6px;
-  background: rgba(255,255,255,0.18);
+  background: rgba(255, 255, 255, 0.22);
   border-radius: 4px;
   font-size: 10px;
   letter-spacing: 0.3px;
+  text-shadow: 0 1px 0 rgba(26, 79, 196, 0.18);
 }
 .qq-answer-value {
   font-weight: 600;
   letter-spacing: 0.2px;
+  text-shadow: 0 1px 1px rgba(26, 79, 196, 0.28);
 }
 .qq-answer-copy-icon {
   opacity: 0.75;
