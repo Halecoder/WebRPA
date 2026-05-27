@@ -442,10 +442,14 @@
               </div>
               <div class="cfg-row">
                 <label>监听地址</label>
-                <select v-model="configForm.backend.host" class="cfg-input">
-                  <option value="127.0.0.1">127.0.0.1（仅本机）</option>
-                  <option value="0.0.0.0">0.0.0.0（允许局域网访问）</option>
-                </select>
+                <div class="custom-select" :class="{ open: backendHostOpen }" @click.stop="backendHostOpen = !backendHostOpen" tabindex="0" @blur="backendHostOpen = false">
+                  <span class="custom-select-value">{{ configForm.backend.host === '127.0.0.1' ? '127.0.0.1（仅本机）' : '0.0.0.0（允许局域网访问）' }}</span>
+                  <svg class="custom-select-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <div class="custom-select-dropdown" v-if="backendHostOpen">
+                    <div class="custom-select-option" :class="{ active: configForm.backend.host === '127.0.0.1' }" @click.stop="configForm.backend.host = '127.0.0.1'; backendHostOpen = false">127.0.0.1（仅本机）</div>
+                    <div class="custom-select-option" :class="{ active: configForm.backend.host === '0.0.0.0' }" @click.stop="configForm.backend.host = '0.0.0.0'; backendHostOpen = false">0.0.0.0（允许局域网访问）</div>
+                  </div>
+                </div>
               </div>
               <div class="cfg-row">
                 <label>端口号</label>
@@ -464,10 +468,14 @@
               </div>
               <div class="cfg-row">
                 <label>监听地址</label>
-                <select v-model="configForm.frontend.host" class="cfg-input">
-                  <option value="127.0.0.1">127.0.0.1（仅本机）</option>
-                  <option value="0.0.0.0">0.0.0.0（允许局域网访问）</option>
-                </select>
+                <div class="custom-select" :class="{ open: frontendHostOpen }" @click.stop="frontendHostOpen = !frontendHostOpen" tabindex="0" @blur="frontendHostOpen = false">
+                  <span class="custom-select-value">{{ configForm.frontend.host === '127.0.0.1' ? '127.0.0.1（仅本机）' : '0.0.0.0（允许局域网访问）' }}</span>
+                  <svg class="custom-select-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <div class="custom-select-dropdown" v-if="frontendHostOpen">
+                    <div class="custom-select-option" :class="{ active: configForm.frontend.host === '127.0.0.1' }" @click.stop="configForm.frontend.host = '127.0.0.1'; frontendHostOpen = false">127.0.0.1（仅本机）</div>
+                    <div class="custom-select-option" :class="{ active: configForm.frontend.host === '0.0.0.0' }" @click.stop="configForm.frontend.host = '0.0.0.0'; frontendHostOpen = false">0.0.0.0（允许局域网访问）</div>
+                  </div>
+                </div>
               </div>
               <div class="cfg-row">
                 <label>端口号</label>
@@ -634,6 +642,10 @@ const configForm = ref({
   backend: { host: '0.0.0.0', port: 8000, reload: false },
   frontend: { host: '0.0.0.0', port: 5173 },
 })
+
+// 自定义下拉框状态
+const backendHostOpen = ref(false)
+const frontendHostOpen = ref(false)
 
 const toast = ref({ show: false, type: 'info', message: '' })
 let toastTimer = null
@@ -2244,6 +2256,108 @@ body {
   outline: none;
   border-color: var(--c-blue-500);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* 自定义 select 下拉框样式 */
+select.cfg-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  cursor: pointer;
+}
+select.cfg-input:hover {
+  border-color: var(--c-blue-300, #93c5fd);
+  background-color: var(--c-blue-50, #eff6ff);
+}
+select.cfg-input option {
+  padding: 8px 12px;
+  font-size: 12.5px;
+  background: white;
+  color: var(--c-text-1);
+}
+
+/* 自定义下拉组件 */
+.custom-select {
+  position: relative;
+  flex: 1;
+  height: 32px;
+  padding: 0 32px 0 10px;
+  background: white;
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  font-size: 12.5px;
+  color: var(--c-text-1);
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: border-color 150ms, box-shadow 150ms, background-color 150ms;
+  user-select: none;
+  outline: none;
+}
+.custom-select:hover {
+  border-color: var(--c-blue-300, #93c5fd);
+  background-color: #fafbff;
+}
+.custom-select:focus,
+.custom-select.open {
+  border-color: var(--c-blue-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+.custom-select-value {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.custom-select-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  transition: transform 200ms ease;
+}
+.custom-select.open .custom-select-arrow {
+  transform: translateY(-50%) rotate(180deg);
+}
+.custom-select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: -1px;
+  right: -1px;
+  background: white;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+  z-index: 100;
+  overflow: hidden;
+  animation: dropdownIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.custom-select-option {
+  padding: 8px 12px;
+  font-size: 12.5px;
+  color: var(--c-text-1);
+  cursor: pointer;
+  transition: background-color 100ms, color 100ms;
+}
+.custom-select-option:hover {
+  background: var(--c-blue-50, #eff6ff);
+  color: var(--c-blue-700, #1d4ed8);
+}
+.custom-select-option.active {
+  background: var(--c-blue-50, #eff6ff);
+  color: var(--c-blue-600, #2563eb);
+  font-weight: 500;
 }
 
 .cfg-tips {
