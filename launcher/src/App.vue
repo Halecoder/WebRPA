@@ -768,13 +768,13 @@ const startServices = async () => {
     }
     if (needBackend) {
       await invoke('start_backend')
-      const ok = await waitFor(() => backendRunning.value, 60, 500, checkServiceStatus)
-      if (!ok) throw new Error('后端启动超时（30 秒），请检查后端日志')
+      const ok = await waitFor(() => backendRunning.value, 240, 500, checkServiceStatus)
+      if (!ok) throw new Error('后端启动超时（120 秒），请检查后端日志')
     }
     if (needFrontend) {
       await invoke('start_frontend')
-      const ok = await waitFor(() => frontendRunning.value, 40, 500, checkServiceStatus)
-      if (!ok) throw new Error('前端启动超时（20 秒），请检查前端日志')
+      const ok = await waitFor(() => frontendRunning.value, 240, 500, checkServiceStatus)
+      if (!ok) throw new Error('前端启动超时（120 秒），请检查前端日志')
     }
     await checkServiceStatus()
     if (backendRunning.value && frontendRunning.value) {
