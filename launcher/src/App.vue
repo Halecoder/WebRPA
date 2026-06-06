@@ -251,7 +251,7 @@
           </div>
           <div class="info-content">
             <div class="info-title">默认端口</div>
-            <div class="info-text">后端 8000、前端 5173；可通过设置修改实现多开</div>
+            <div class="info-text">后端 5241、前端 5921；可通过设置修改实现多开</div>
           </div>
         </div>
         <div class="info-card info-card-pink" @click="showSponsor" style="cursor: pointer">
@@ -453,7 +453,7 @@
               </div>
               <div class="cfg-row">
                 <label>端口号</label>
-                <input type="number" v-model.number="configForm.backend.port" class="cfg-input" min="1024" max="65535" placeholder="8000"/>
+                <input type="number" v-model.number="configForm.backend.port" class="cfg-input" min="1024" max="65535" placeholder="5241"/>
               </div>
             </div>
 
@@ -479,7 +479,7 @@
               </div>
               <div class="cfg-row">
                 <label>端口号</label>
-                <input type="number" v-model.number="configForm.frontend.port" class="cfg-input" min="1024" max="65535" placeholder="5173"/>
+                <input type="number" v-model.number="configForm.frontend.port" class="cfg-input" min="1024" max="65535" placeholder="5921"/>
               </div>
             </div>
 
@@ -639,8 +639,8 @@ const qqAnswer = '青云制作_彭明航'
 const showQQAnswer = ref(false)
 
 const configForm = ref({
-  backend: { host: '0.0.0.0', port: 8000, reload: false },
-  frontend: { host: '0.0.0.0', port: 5173 },
+  backend: { host: '0.0.0.0', port: 5241, reload: false },
+  frontend: { host: '0.0.0.0', port: 5921 },
 })
 
 // 自定义下拉框状态
