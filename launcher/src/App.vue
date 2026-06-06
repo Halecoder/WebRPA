@@ -424,29 +424,48 @@
             <p class="hire-intro">作者承接以下四类商单，有需求欢迎联系，价格公道、按时交付：</p>
             <div class="hire-grid">
               <div class="hire-item">
-                <span class="hire-emoji">🟢</span>
-                <div>
+                <span class="hire-ic hire-ic-green">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M9.5 4C5.36 4 2 6.86 2 10.38c0 1.98 1.07 3.75 2.75 4.94L4 18l2.6-1.36c.9.26 1.87.4 2.9.4.27 0 .53-.01.8-.03a5.4 5.4 0 0 1-.2-1.45c0-3.16 3.06-5.6 6.7-5.6.3 0 .59.02.88.06C16.97 6.36 13.6 4 9.5 4Zm-2.4 3.1a.95.95 0 1 1 0 1.9.95.95 0 0 1 0-1.9Zm4.9 0a.95.95 0 1 1 0 1.9.95.95 0 0 1 0-1.9Z"/>
+                    <path d="M22 15.5c0-2.8-2.74-5.06-6.12-5.06-3.38 0-6.13 2.26-6.13 5.06s2.75 5.07 6.13 5.07c.7 0 1.38-.1 2.01-.28L20 21.5l-.5-1.86C21.04 18.67 22 17.18 22 15.5Zm-8.13-1.3a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6Zm4 0a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6Z"/>
+                  </svg>
+                </span>
+                <div class="hire-item-text">
                   <div class="hire-item-title">微信小程序全栈开发</div>
                   <div class="hire-item-sub">前后端一体，从设计到上线</div>
                 </div>
               </div>
               <div class="hire-item">
-                <span class="hire-emoji">🌐</span>
-                <div>
+                <span class="hire-ic hire-ic-blue">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+                  </svg>
+                </span>
+                <div class="hire-item-text">
                   <div class="hire-item-title">网站全栈开发</div>
                   <div class="hire-item-sub">官网 / 后台 / Web 应用</div>
                 </div>
               </div>
               <div class="hire-item">
-                <span class="hire-emoji">🖥️</span>
-                <div>
+                <span class="hire-ic hire-ic-indigo">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="12" rx="1.5"/>
+                    <path d="M8 20h8M12 16v4"/>
+                  </svg>
+                </span>
+                <div class="hire-item-text">
                   <div class="hire-item-title">Windows 桌面应用开发</div>
                   <div class="hire-item-sub">工具软件 / 自动化客户端</div>
                 </div>
               </div>
               <div class="hire-item">
-                <span class="hire-emoji">⚙️</span>
-                <div>
+                <span class="hire-ic hire-ic-cyan">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m7 8-4 4 4 4M17 8l4 4-4 4M14 4l-4 16"/>
+                  </svg>
+                </span>
+                <div class="hire-item-text">
                   <div class="hire-item-title">自动化脚本开发</div>
                   <div class="hire-item-sub">RPA / 爬虫 / 批处理</div>
                 </div>
@@ -454,11 +473,22 @@
             </div>
             <div class="hire-contact">
               <div class="hire-contact-row" @click="copyContact('wechat')">
+                <span class="hire-contact-ic hire-contact-ic-wechat">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path d="M9.5 4C5.36 4 2 6.86 2 10.38c0 1.98 1.07 3.75 2.75 4.94L4 18l2.6-1.36c.9.26 1.87.4 2.9.4.27 0 .53-.01.8-.03a5.4 5.4 0 0 1-.2-1.45c0-3.16 3.06-5.6 6.7-5.6.3 0 .59.02.88.06C16.97 6.36 13.6 4 9.5 4Zm-2.4 3.1a.95.95 0 1 1 0 1.9.95.95 0 0 1 0-1.9Zm4.9 0a.95.95 0 1 1 0 1.9.95.95 0 0 1 0-1.9Z"/>
+                    <path d="M22 15.5c0-2.8-2.74-5.06-6.12-5.06-3.38 0-6.13 2.26-6.13 5.06s2.75 5.07 6.13 5.07c.7 0 1.38-.1 2.01-.28L20 21.5l-.5-1.86C21.04 18.67 22 17.18 22 15.5Zm-8.13-1.3a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6Zm4 0a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6Z"/>
+                  </svg>
+                </span>
                 <span class="hire-contact-label">微信</span>
                 <code class="hire-contact-value">QyPmh20061026</code>
                 <button class="hire-copy-btn">复制</button>
               </div>
               <div class="hire-contact-row" @click="copyContact('qq')">
+                <span class="hire-contact-ic hire-contact-ic-qq">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path d="M12 2c2.7 0 4.9 2.3 5.1 5.2.06.8.5 1.5.9 2.2.7 1.2 1.4 2.4 1.4 4.3 0 1.3-.4 2.2-.9 2.2-.4 0-.8-.6-1.1-1.5-.2.9-.6 1.7-1.1 2.4.6.3 1 .7 1 1.2 0 .9-1.9 1.6-4.3 1.7l-.9.02h-.2l-.9-.02C9.7 21.4 7.8 20.7 7.8 19.8c0-.5.4-.9 1-1.2-.5-.7-.9-1.5-1.1-2.4-.3.9-.7 1.5-1.1 1.5-.5 0-.9-.9-.9-2.2 0-1.9.7-3.1 1.4-4.3.4-.7.84-1.4.9-2.2C8.1 4.3 9.3 2 12 2Z"/>
+                  </svg>
+                </span>
                 <span class="hire-contact-label">QQ</span>
                 <code class="hire-contact-value">2124691573</code>
                 <button class="hire-copy-btn">复制</button>
@@ -2007,20 +2037,25 @@ body {
 
 
 .chip-btn-amber {
-  border-color: var(--c-amber-200, #fde68a);
-  background: linear-gradient(135deg, #fffbeb, #fef3c7);
-  color: #b45309;
+  border-color: var(--c-blue-200, #bfdbfe);
+  background: var(--c-blue-50);
+  color: var(--c-blue-700);
+}
+.chip-btn-amber:hover:not(:disabled) {
+  border-color: var(--c-blue-500);
+  background: var(--c-blue-100, #dbeafe);
+  color: var(--c-blue-700);
 }
 
 /* ============================================================
-   接单广告弹窗
+   接单广告弹窗（蓝色主题，与启动器整体一致）
    ============================================================ */
 .hire-banner {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 55%, #1d4ed8 100%);
 }
 .hire-intro {
   font-size: 12.5px;
-  color: var(--c-text-2, #475569);
+  color: var(--c-text-2);
   margin: 0 0 14px;
   line-height: 1.6;
 }
@@ -2034,20 +2069,33 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--c-border, #e2e8f0);
+  padding: 11px 13px;
+  border: 1px solid var(--c-border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--c-card);
   transition: transform 150ms, box-shadow 200ms, border-color 150ms;
 }
 .hire-item:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.12);
-  border-color: #fcd34d;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.1);
+  border-color: var(--c-blue-300, #93c5fd);
 }
-.hire-emoji { font-size: 20px; flex-shrink: 0; }
-.hire-item-title { font-size: 12.5px; font-weight: 600; color: var(--c-text-1, #1e293b); }
-.hire-item-sub { font-size: 11px; color: var(--c-text-3, #94a3b8); margin-top: 2px; }
+.hire-ic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  flex-shrink: 0;
+}
+.hire-ic-green { background: #e7f8ee; color: #07c160; }
+.hire-ic-blue { background: var(--c-blue-50); color: var(--c-blue-600); }
+.hire-ic-indigo { background: #eef2ff; color: #4f46e5; }
+.hire-ic-cyan { background: #e0f7fa; color: #0891b2; }
+.hire-item-text { min-width: 0; }
+.hire-item-title { font-size: 12.5px; font-weight: 700; color: var(--c-text-1); }
+.hire-item-sub { font-size: 11px; color: var(--c-text-3); margin-top: 2px; }
 .hire-contact {
   display: flex;
   flex-direction: column;
@@ -2057,44 +2105,58 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
+  padding: 10px 12px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #fffbeb, #fef3c7);
-  border: 1px solid #fde68a;
+  background: var(--c-bg-base);
+  border: 1px solid var(--c-border);
   cursor: pointer;
-  transition: transform 120ms, box-shadow 160ms;
+  transition: transform 120ms, box-shadow 160ms, border-color 160ms;
 }
 .hire-contact-row:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+  border-color: var(--c-blue-300, #93c5fd);
 }
+.hire-contact-ic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  color: #fff;
+}
+.hire-contact-ic-wechat { background: #07c160; }
+.hire-contact-ic-qq { background: #12b7f5; }
 .hire-contact-label {
   font-size: 12px;
   font-weight: 600;
-  color: #b45309;
-  width: 36px;
+  color: var(--c-text-2);
+  width: 34px;
   flex-shrink: 0;
 }
 .hire-contact-value {
   flex: 1;
   font-size: 14px;
   font-weight: 700;
-  color: #92400e;
+  color: var(--c-text-1);
   font-family: ui-monospace, monospace;
   letter-spacing: 0.5px;
 }
 .hire-copy-btn {
-  padding: 4px 14px;
-  border-radius: 6px;
+  padding: 5px 16px;
+  border-radius: 7px;
   border: none;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: #fff;
   font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
-  transition: filter 120ms;
+  transition: filter 120ms, transform 100ms;
 }
 .hire-copy-btn:hover { filter: brightness(1.08); }
+.hire-copy-btn:active { transform: scale(0.96); }
 
 /* ============================================================
    赞助弹窗内容
