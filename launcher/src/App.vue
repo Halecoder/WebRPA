@@ -876,20 +876,22 @@ const startServices = async () => {
       showToast('所有服务都已在运行', 'info')
       return
     }
-    if (needBackend) {
-      await invoke('start_backend')
-      const ok = await waitFor(() => backendRunning.value, 240, 500, checkServiceStatus)
-      if (!ok) throw new Error('后端启动超时（120 秒），请检查后端日志')
-    }
-    if (needFrontend) {
-      await invoke('start_frontend')
-      const ok = await waitFor(() => frontendRunning.value, 240, 500, checkServiceStatus)
-      if (!ok) throw new Error('前端启动超时（120 秒），请检查前端日志')
-    }
+    // 并行启动后端与前端（两者相互独立），把启动时间从「串行相加」压成「并行取最大」
+    if (needBackend) await invoke('start_backend')
+    if (needFrontend) await invoke('start_frontend')
+
+    // 并行等待两者就绪；轮询间隔 200ms，更快感知端口就绪（600 次 × 200ms = 120s 超时）
+    const waits = []
+    if (needBackend) waits.push(waitFor(() => backendRunning.value, 600, 200, checkServiceStatus).then((ok) => ({ name: '后端', ok })))
+    if (needFrontend) waits.push(waitFor(() => frontendRunning.value, 600, 200, checkServiceStatus).then((ok) => ({ name: '前端', ok })))
+    const results = await Promise.all(waits)
+    const failed = results.find((r) => !r.ok)
+    if (failed) throw new Error(`${failed.name}启动超时（120 秒），请检查${failed.name}日志`)
+
     await checkServiceStatus()
     if (backendRunning.value && frontendRunning.value) {
       showToast('服务启动成功，正在打开浏览器…', 'success')
-      setTimeout(openBrowser, 600)
+      setTimeout(openBrowser, 200)
     }
   } catch (error) {
     const msg = typeof error === 'string' ? error : String(error?.message || error)
