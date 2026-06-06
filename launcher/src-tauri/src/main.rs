@@ -756,86 +756,13 @@ async fn open_backend_log() -> Result<(), String> {
     
     #[cfg(target_os = "windows")]
     {
-        // 在Windows上直接调用默认浏览器
-        // 首先尝试获取默认浏览器路径
-        let output = std::process::Command::new("reg")
-            .args(&["query", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice", "/v", "ProgId"])
+        // 用系统默认浏览器打开（尊重用户的默认浏览器设置，不写死 Edge/Chrome）
+        // cmd /c start "" <url> 会用 file:// 关联的默认浏览器打开
+        std::process::Command::new("cmd")
+            .args(&["/c", "start", "", &file_url])
             .creation_flags(0x08000000)
-            .output();
-        
-        if let Ok(output) = output {
-            let output_str = String::from_utf8_lossy(&output.stdout);
-            if output_str.contains("ChromeHTML") {
-                // Chrome浏览器
-                std::process::Command::new("chrome")
-                    .arg(&file_url)
-                    .creation_flags(0x08000000)
-                    .spawn()
-                    .or_else(|_| {
-                        // 如果chrome命令不存在，尝试完整路径
-                        std::process::Command::new("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
-                            .arg(&file_url)
-                            .creation_flags(0x08000000)
-                            .spawn()
-                    })
-                    .or_else(|_| {
-                        // 尝试用户目录下的Chrome
-                        let user_chrome = format!("{}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe", 
-                            std::env::var("USERPROFILE").unwrap_or_default());
-                        std::process::Command::new(&user_chrome)
-                            .arg(&file_url)
-                            .creation_flags(0x08000000)
-                            .spawn()
-                    })
-                    .map_err(|e| format!("启动Chrome失败: {}", e))?;
-            } else if output_str.contains("MSEdgeHTM") {
-                // Edge浏览器
-                std::process::Command::new("msedge")
-                    .arg(&file_url)
-                    .creation_flags(0x08000000)
-                    .spawn()
-                    .or_else(|_| {
-                        std::process::Command::new("C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe")
-                            .arg(&file_url)
-                            .creation_flags(0x08000000)
-                            .spawn()
-                    })
-                    .map_err(|e| format!("启动Edge失败: {}", e))?;
-            } else {
-                // 其他浏览器或回退方案，直接用explorer打开URL
-                std::process::Command::new("explorer")
-                    .arg(&file_url)
-                    .creation_flags(0x08000000)
-                    .spawn()
-                    .map_err(|e| format!("启动浏览器失败: {}", e))?;
-            }
-        } else {
-            // 如果无法获取默认浏览器，尝试常见浏览器
-            std::process::Command::new("chrome")
-                .arg(&file_url)
-                .creation_flags(0x08000000)
-                .spawn()
-                .or_else(|_| {
-                    std::process::Command::new("msedge")
-                        .arg(&file_url)
-                        .creation_flags(0x08000000)
-                        .spawn()
-                })
-                .or_else(|_| {
-                    std::process::Command::new("firefox")
-                        .arg(&file_url)
-                        .creation_flags(0x08000000)
-                        .spawn()
-                })
-                .or_else(|_| {
-                    // 最后回退到explorer
-                    std::process::Command::new("explorer")
-                        .arg(&file_url)
-                        .creation_flags(0x08000000)
-                        .spawn()
-                })
-                .map_err(|e| format!("启动浏览器失败: {}", e))?;
-        }
+            .spawn()
+            .map_err(|e| format!("打开日志文件失败: {}", e))?;
     }
     
     #[cfg(not(target_os = "windows"))]
@@ -871,86 +798,12 @@ async fn open_frontend_log() -> Result<(), String> {
     
     #[cfg(target_os = "windows")]
     {
-        // 在Windows上直接调用默认浏览器
-        // 首先尝试获取默认浏览器路径
-        let output = std::process::Command::new("reg")
-            .args(&["query", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice", "/v", "ProgId"])
+        // 用系统默认浏览器打开（尊重用户的默认浏览器设置，不写死 Edge/Chrome）
+        std::process::Command::new("cmd")
+            .args(&["/c", "start", "", &file_url])
             .creation_flags(0x08000000)
-            .output();
-        
-        if let Ok(output) = output {
-            let output_str = String::from_utf8_lossy(&output.stdout);
-            if output_str.contains("ChromeHTML") {
-                // Chrome浏览器
-                std::process::Command::new("chrome")
-                    .arg(&file_url)
-                    .creation_flags(0x08000000)
-                    .spawn()
-                    .or_else(|_| {
-                        // 如果chrome命令不存在，尝试完整路径
-                        std::process::Command::new("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
-                            .arg(&file_url)
-                            .creation_flags(0x08000000)
-                            .spawn()
-                    })
-                    .or_else(|_| {
-                        // 尝试用户目录下的Chrome
-                        let user_chrome = format!("{}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe", 
-                            std::env::var("USERPROFILE").unwrap_or_default());
-                        std::process::Command::new(&user_chrome)
-                            .arg(&file_url)
-                            .creation_flags(0x08000000)
-                            .spawn()
-                    })
-                    .map_err(|e| format!("启动Chrome失败: {}", e))?;
-            } else if output_str.contains("MSEdgeHTM") {
-                // Edge浏览器
-                std::process::Command::new("msedge")
-                    .arg(&file_url)
-                    .creation_flags(0x08000000)
-                    .spawn()
-                    .or_else(|_| {
-                        std::process::Command::new("C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe")
-                            .arg(&file_url)
-                            .creation_flags(0x08000000)
-                            .spawn()
-                    })
-                    .map_err(|e| format!("启动Edge失败: {}", e))?;
-            } else {
-                // 其他浏览器或回退方案，直接用explorer打开URL
-                std::process::Command::new("explorer")
-                    .arg(&file_url)
-                    .creation_flags(0x08000000)
-                    .spawn()
-                    .map_err(|e| format!("启动浏览器失败: {}", e))?;
-            }
-        } else {
-            // 如果无法获取默认浏览器，尝试常见浏览器
-            std::process::Command::new("chrome")
-                .arg(&file_url)
-                .creation_flags(0x08000000)
-                .spawn()
-                .or_else(|_| {
-                    std::process::Command::new("msedge")
-                        .arg(&file_url)
-                        .creation_flags(0x08000000)
-                        .spawn()
-                })
-                .or_else(|_| {
-                    std::process::Command::new("firefox")
-                        .arg(&file_url)
-                        .creation_flags(0x08000000)
-                        .spawn()
-                })
-                .or_else(|_| {
-                    // 最后回退到explorer
-                    std::process::Command::new("explorer")
-                        .arg(&file_url)
-                        .creation_flags(0x08000000)
-                        .spawn()
-                })
-                .map_err(|e| format!("启动浏览器失败: {}", e))?;
-        }
+            .spawn()
+            .map_err(|e| format!("打开日志文件失败: {}", e))?;
     }
     
     #[cfg(not(target_os = "windows"))]
