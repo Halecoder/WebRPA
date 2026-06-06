@@ -93,6 +93,13 @@
             </svg>
             <span>支持作者</span>
           </button>
+          <button class="chip-btn chip-btn-amber" @click="showHire = true">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2"/>
+              <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+            </svg>
+            <span>找作者接单</span>
+          </button>
         </div>
       </section>
 
@@ -390,6 +397,78 @@
       </div>
     </transition>
 
+    <!-- 接单广告弹窗 -->
+    <transition name="modal">
+      <div v-if="showHire" class="modal-mask" @click="showHire = false">
+        <div class="modal-shell" @click.stop>
+          <div class="modal-banner hire-banner">
+            <div class="modal-banner-content">
+              <div class="modal-banner-icon">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="7" width="20" height="14" rx="2"/>
+                  <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+                </svg>
+              </div>
+              <div>
+                <div class="modal-banner-title">找作者接单</div>
+                <div class="modal-banner-sub">专业全栈开发 · 按需定制 · 质量保障</div>
+              </div>
+            </div>
+            <button class="modal-close" @click="showHire = false">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none">
+                <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p class="hire-intro">作者承接以下四类商单，有需求欢迎联系，价格公道、按时交付：</p>
+            <div class="hire-grid">
+              <div class="hire-item">
+                <span class="hire-emoji">🟢</span>
+                <div>
+                  <div class="hire-item-title">微信小程序全栈开发</div>
+                  <div class="hire-item-sub">前后端一体，从设计到上线</div>
+                </div>
+              </div>
+              <div class="hire-item">
+                <span class="hire-emoji">🌐</span>
+                <div>
+                  <div class="hire-item-title">网站全栈开发</div>
+                  <div class="hire-item-sub">官网 / 后台 / Web 应用</div>
+                </div>
+              </div>
+              <div class="hire-item">
+                <span class="hire-emoji">🖥️</span>
+                <div>
+                  <div class="hire-item-title">Windows 桌面应用开发</div>
+                  <div class="hire-item-sub">工具软件 / 自动化客户端</div>
+                </div>
+              </div>
+              <div class="hire-item">
+                <span class="hire-emoji">⚙️</span>
+                <div>
+                  <div class="hire-item-title">自动化脚本开发</div>
+                  <div class="hire-item-sub">RPA / 爬虫 / 批处理</div>
+                </div>
+              </div>
+            </div>
+            <div class="hire-contact">
+              <div class="hire-contact-row" @click="copyContact('wechat')">
+                <span class="hire-contact-label">微信</span>
+                <code class="hire-contact-value">QyPmh20061026</code>
+                <button class="hire-copy-btn">复制</button>
+              </div>
+              <div class="hire-contact-row" @click="copyContact('qq')">
+                <span class="hire-contact-label">QQ</span>
+                <code class="hire-contact-value">2124691573</code>
+                <button class="hire-copy-btn">复制</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+
     <!-- 二维码放大查看 -->
     <transition name="modal">
       <div v-if="enlargedQr" class="qr-zoom-mask" @click="enlargedQr = ''">
@@ -596,6 +675,7 @@ const starting = ref(false)
 const backendRunning = ref(false)
 const frontendRunning = ref(false)
 const showSponsorModal = ref(false)
+const showHire = ref(false)
 const enlargedQr = ref('')
 const showConfigModal = ref(false)
 // 是否在启动器启动时自动弹出赞助提示（持久化在 localStorage，默认开启）
@@ -835,6 +915,18 @@ const copyQQAnswer = async () => {
   }
 }
 const showSponsor = () => { showSponsorModal.value = true }
+
+// 复制接单联系方式
+const copyContact = async (kind) => {
+  const map = { wechat: 'QyPmh20061026', qq: '2124691573' }
+  const label = { wechat: '微信号', qq: 'QQ' }
+  try {
+    await navigator.clipboard.writeText(map[kind])
+    showToast(`已复制${label[kind]}：${map[kind]}`, 'success')
+  } catch {
+    showToast('复制失败，请手动复制', 'error')
+  }
+}
 const showLicense = () => invoke('open_browser', { url: 'https://github.com/pmh1314520/WebRPA/blob/main/LICENSE' })
 
 const loadConfig = async () => {
@@ -1913,6 +2005,96 @@ body {
 .modal-body::-webkit-scrollbar { width: 6px; }
 .modal-body::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 3px; }
 
+
+.chip-btn-amber {
+  border-color: var(--c-amber-200, #fde68a);
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  color: #b45309;
+}
+
+/* ============================================================
+   接单广告弹窗
+   ============================================================ */
+.hire-banner {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+.hire-intro {
+  font-size: 12.5px;
+  color: var(--c-text-2, #475569);
+  margin: 0 0 14px;
+  line-height: 1.6;
+}
+.hire-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.hire-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--c-border, #e2e8f0);
+  border-radius: 10px;
+  background: #fff;
+  transition: transform 150ms, box-shadow 200ms, border-color 150ms;
+}
+.hire-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.12);
+  border-color: #fcd34d;
+}
+.hire-emoji { font-size: 20px; flex-shrink: 0; }
+.hire-item-title { font-size: 12.5px; font-weight: 600; color: var(--c-text-1, #1e293b); }
+.hire-item-sub { font-size: 11px; color: var(--c-text-3, #94a3b8); margin-top: 2px; }
+.hire-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hire-contact-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border: 1px solid #fde68a;
+  cursor: pointer;
+  transition: transform 120ms, box-shadow 160ms;
+}
+.hire-contact-row:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+}
+.hire-contact-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b45309;
+  width: 36px;
+  flex-shrink: 0;
+}
+.hire-contact-value {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 700;
+  color: #92400e;
+  font-family: ui-monospace, monospace;
+  letter-spacing: 0.5px;
+}
+.hire-copy-btn {
+  padding: 4px 14px;
+  border-radius: 6px;
+  border: none;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 120ms;
+}
+.hire-copy-btn:hover { filter: brightness(1.08); }
 
 /* ============================================================
    赞助弹窗内容
