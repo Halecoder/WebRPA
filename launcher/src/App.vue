@@ -98,7 +98,7 @@
               <rect x="2" y="7" width="20" height="14" rx="2"/>
               <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
             </svg>
-            <span>找作者接单</span>
+            <span>外包开发</span>
           </button>
         </div>
       </section>
@@ -410,8 +410,8 @@
                 </svg>
               </div>
               <div>
-                <div class="modal-banner-title">找作者接单</div>
-                <div class="modal-banner-sub">专业全栈开发 · 按需定制 · 质量保障</div>
+                <div class="modal-banner-title">把开发需求交给作者</div>
+                <div class="modal-banner-sub">微信小程序 · 网站 · 桌面应用 · 自动化脚本</div>
               </div>
             </div>
             <button class="modal-close" @click="showHire = false">
@@ -421,7 +421,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <p class="hire-intro">作者承接以下四类商单，有需求欢迎联系，价格公道、按时交付：</p>
+            <p class="hire-intro">您有以下开发需求？欢迎把项目交给作者承接，专业全栈开发、价格公道、按时交付：</p>
             <div class="hire-grid">
               <div class="hire-item">
                 <span class="hire-ic hire-ic-green">
