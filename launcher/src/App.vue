@@ -404,12 +404,12 @@
           <div class="modal-banner hire-banner">
             <div class="modal-banner-content">
               <div class="modal-banner-icon">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="2" y="7" width="20" height="14" rx="2"/>
                   <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
                 </svg>
               </div>
-              <div>
+              <div class="modal-banner-text">
                 <div class="modal-banner-title">把开发需求交给作者</div>
                 <div class="modal-banner-sub">微信小程序 · 网站 · 桌面应用 · 自动化脚本</div>
               </div>
