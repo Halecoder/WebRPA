@@ -751,6 +751,92 @@ fn compare_versions(local: &str, remote: &str) -> bool {
     false
 }
 // 打开后端日志文件
+// 解析 Windows 默认浏览器的可执行文件路径（尊重用户系统设置，不写死 Edge/Chrome）。
+// 思路：读 https 的 UserChoice ProgId → 该 ProgId 的 shell\open\command → 提取 exe 路径。
+#[cfg(target_os = "windows")]
+fn resolve_default_browser_exe() -> Option<String> {
+    fn reg_query(path: &str, value_arg: &[&str]) -> Option<String> {
+        let mut args = vec!["query", path];
+        args.extend_from_slice(value_arg);
+        let output = std::process::Command::new("reg")
+            .args(&args)
+            .creation_flags(0x08000000)
+            .output()
+            .ok()?;
+        if !output.status.success() {
+            return None;
+        }
+        Some(String::from_utf8_lossy(&output.stdout).to_string())
+    }
+
+    // 1) 读默认浏览器 ProgId（优先 https，回退 http）
+    let progid = ["https", "http"].iter().find_map(|scheme| {
+        let key = format!(
+            "HKCU\\Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\{}\\UserChoice",
+            scheme
+        );
+        let out = reg_query(&key, &["/v", "ProgId"])?;
+        // 行形如：    ProgId    REG_SZ    ChromeHTML
+        out.lines().find_map(|line| {
+            let l = line.trim();
+            if l.starts_with("ProgId") {
+                l.split_whitespace().last().map(|s| s.to_string())
+            } else {
+                None
+            }
+        })
+    })?;
+
+    // 2) 读该 ProgId 的打开命令
+    let cmd_key = format!("HKCR\\{}\\shell\\open\\command", progid);
+    let cmd_out = reg_query(&cmd_key, &["/ve"])?;
+    // 取出默认值那一行的命令串（REG_SZ 之后的内容）
+    let raw = cmd_out.lines().find_map(|line| {
+        let l = line.trim();
+        if l.contains("REG_SZ") {
+            l.split("REG_SZ").nth(1).map(|s| s.trim().to_string())
+        } else {
+            None
+        }
+    })?;
+
+    // 3) 从命令串中提取 exe 路径
+    let exe = if raw.starts_with('"') {
+        // "C:\...\app.exe" -- "%1"
+        raw[1..].split('"').next().map(|s| s.to_string())
+    } else {
+        // C:\...\app.exe %1
+        raw.split_whitespace().next().map(|s| s.to_string())
+    }?;
+
+    if exe.to_lowercase().ends_with(".exe") && std::path::Path::new(&exe).exists() {
+        Some(exe)
+    } else {
+        None
+    }
+}
+
+// 用系统默认浏览器打开指定的 file:// URL（日志文件可能很大，用浏览器而非记事本）。
+// .log/.txt 的文件关联默认是记事本，所以不能用 `start`，必须显式调用默认浏览器 exe。
+#[cfg(target_os = "windows")]
+fn open_url_in_default_browser(file_url: &str) -> Result<(), String> {
+    if let Some(browser) = resolve_default_browser_exe() {
+        std::process::Command::new(&browser)
+            .arg(file_url)
+            .creation_flags(0x08000000)
+            .spawn()
+            .map_err(|e| format!("用默认浏览器打开失败: {}", e))?;
+        return Ok(());
+    }
+    // 回退：交给系统 shell 处理（极少数无法解析默认浏览器的环境）
+    std::process::Command::new("cmd")
+        .args(&["/c", "start", "", file_url])
+        .creation_flags(0x08000000)
+        .spawn()
+        .map_err(|e| format!("打开日志文件失败: {}", e))?;
+    Ok(())
+}
+
 #[tauri::command]
 async fn open_backend_log() -> Result<(), String> {
     let log_path = std::env::current_dir()
@@ -772,13 +858,8 @@ async fn open_backend_log() -> Result<(), String> {
     
     #[cfg(target_os = "windows")]
     {
-        // 用系统默认浏览器打开（尊重用户的默认浏览器设置，不写死 Edge/Chrome）
-        // cmd /c start "" <url> 会用 file:// 关联的默认浏览器打开
-        std::process::Command::new("cmd")
-            .args(&["/c", "start", "", &file_url])
-            .creation_flags(0x08000000)
-            .spawn()
-            .map_err(|e| format!("打开日志文件失败: {}", e))?;
+        // 用系统默认浏览器打开（.log 默认关联记事本，必须显式调用默认浏览器 exe）
+        open_url_in_default_browser(&file_url)?;
     }
     
     #[cfg(not(target_os = "windows"))]
@@ -814,12 +895,8 @@ async fn open_frontend_log() -> Result<(), String> {
     
     #[cfg(target_os = "windows")]
     {
-        // 用系统默认浏览器打开（尊重用户的默认浏览器设置，不写死 Edge/Chrome）
-        std::process::Command::new("cmd")
-            .args(&["/c", "start", "", &file_url])
-            .creation_flags(0x08000000)
-            .spawn()
-            .map_err(|e| format!("打开日志文件失败: {}", e))?;
+        // 用系统默认浏览器打开（.log 默认关联记事本，必须显式调用默认浏览器 exe）
+        open_url_in_default_browser(&file_url)?;
     }
     
     #[cfg(not(target_os = "windows"))]
