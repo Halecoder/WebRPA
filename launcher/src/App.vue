@@ -175,7 +175,6 @@
               class="cta-stop"
               @click="stopServices"
               :disabled="!backendRunning && !frontendRunning"
-              title="停止所有服务"
             >
               <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
                 <rect x="6" y="6" width="12" height="12" rx="1"/>
