@@ -642,17 +642,28 @@
             </div>
 
             <div class="cfg-actions">
-              <button class="btn-ghost" @click="cancelConfig">取消</button>
-              <button class="btn-primary" @click="saveConfiguration" :disabled="saving">
-                <svg v-if="!saving" viewBox="0 0 24 24" width="13" height="13" fill="none">
-                  <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <svg v-else class="rotating" viewBox="0 0 24 24" width="13" height="13" fill="none">
-                  <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"
-                    stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>{{ saving ? '保存中…' : '保存配置' }}</span>
-              </button>
+              <div class="autosave-status">
+                <template v-if="autoSaveStatus === 'saving'">
+                  <svg class="rotating" viewBox="0 0 24 24" width="13" height="13" fill="none">
+                    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"
+                      stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>正在自动保存…</span>
+                </template>
+                <template v-else-if="autoSaveStatus === 'saved'">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none">
+                    <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>更改已自动保存</span>
+                </template>
+                <template v-else-if="autoSaveStatus === 'invalid'">
+                  <span class="autosave-invalid">端口需在 1024-65535 且前后端不同，未保存</span>
+                </template>
+                <template v-else>
+                  <span>更改将实时自动保存</span>
+                </template>
+              </div>
+              <button class="btn-primary" @click="cancelConfig">完成</button>
             </div>
           </div>
         </div>
@@ -745,6 +756,10 @@ watch(autoStartServices, (v) => {
   try { localStorage.setItem(AUTO_START_KEY, v ? '1' : '0') } catch {}
 })
 const saving = ref(false)
+// 自动保存状态：idle / saving / saved / invalid
+const autoSaveStatus = ref('idle')
+let autoSaveTimer = null
+let suppressAutoSave = false
 const closing = ref(false)
 const closingMessage = ref('正在关闭服务，请稍候…')
 const statusCheckInterval = ref(null)
@@ -978,9 +993,42 @@ const loadConfig = async () => {
     if (parsed.frontend && typeof parsed.frontend.fastStart !== 'boolean') {
       parsed.frontend.fastStart = false
     }
+    suppressAutoSave = true   // 加载赋值不触发自动保存
     configForm.value = parsed
+    // 等本次响应式更新的 watch 回调跑完后再放开
+    setTimeout(() => { suppressAutoSave = false }, 0)
   } catch (error) { console.error('加载配置失败:', error) }
 }
+
+// 校验配置是否合法（端口范围 / 不冲突）
+const validateConfig = () => {
+  const b = configForm.value.backend?.port
+  const f = configForm.value.frontend?.port
+  if (b < 1024 || b > 65535 || f < 1024 || f > 65535) return false
+  if (b === f) return false
+  return true
+}
+
+// 静默持久化（用于实时自动保存，不弹成功提示、不关闭弹窗）
+const persistConfig = async () => {
+  if (!validateConfig()) { autoSaveStatus.value = 'invalid'; return }
+  autoSaveStatus.value = 'saving'
+  try {
+    await invoke('save_config', { config: configForm.value })
+    autoSaveStatus.value = 'saved'
+  } catch (error) {
+    console.error('自动保存失败:', error)
+    autoSaveStatus.value = 'idle'
+  }
+}
+
+// 深度监听配置表单，改动后防抖 500ms 实时自动保存
+watch(configForm, () => {
+  if (suppressAutoSave) return
+  autoSaveStatus.value = 'saving'
+  if (autoSaveTimer) clearTimeout(autoSaveTimer)
+  autoSaveTimer = setTimeout(() => { persistConfig() }, 500)
+}, { deep: true })
 
 const saveConfiguration = async () => {
   saving.value = true
@@ -1007,7 +1055,7 @@ const saveConfiguration = async () => {
   }
 }
 
-const cancelConfig = () => { loadConfig(); showConfigModal.value = false }
+const cancelConfig = () => { showConfigModal.value = false }
 const openBackendLog = async () => {
   try { await invoke('open_backend_log') } catch (e) { showToast(`打开后端日志失败: ${e}`, 'error') }
 }
@@ -2636,10 +2684,20 @@ select.cfg-input option {
 
 .cfg-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   gap: 8px;
   margin-top: 14px;
 }
+.autosave-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--c-text-3);
+}
+.autosave-status svg { color: var(--c-blue-600); flex-shrink: 0; }
+.autosave-invalid { color: #e11d48; }
 
 /* 弹窗按钮 */
 .btn-ghost {
