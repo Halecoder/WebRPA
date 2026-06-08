@@ -634,29 +634,10 @@
               修改端口后需要重启服务才能生效
             </div>
 
-            <div class="cfg-actions">
+            <div class="cfg-actions" v-if="autoSaveStatus === 'invalid'">
               <div class="autosave-status">
-                <template v-if="autoSaveStatus === 'saving'">
-                  <svg class="rotating" viewBox="0 0 24 24" width="13" height="13" fill="none">
-                    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"
-                      stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  <span>正在自动保存…</span>
-                </template>
-                <template v-else-if="autoSaveStatus === 'saved'">
-                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none">
-                    <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  <span>更改已自动保存</span>
-                </template>
-                <template v-else-if="autoSaveStatus === 'invalid'">
-                  <span class="autosave-invalid">端口需在 1024-65535 且前后端不同，未保存</span>
-                </template>
-                <template v-else>
-                  <span>更改将实时自动保存</span>
-                </template>
+                <span class="autosave-invalid">端口需在 1024-65535 且前后端不同，未保存</span>
               </div>
-              <button class="btn-primary" @click="cancelConfig">完成</button>
             </div>
           </div>
         </div>
