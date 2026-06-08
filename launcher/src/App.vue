@@ -144,17 +144,17 @@
               v-if="!backendRunning || !frontendRunning"
               class="cta-primary"
               @click="startServices"
-              :disabled="starting"
+              :disabled="starting || startLocked"
             >
               <span class="cta-glow"></span>
-              <svg v-if="!starting" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <svg v-if="!isStarting" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                 <path d="M8 5v14l11-7z"/>
               </svg>
               <svg v-else class="rotating" viewBox="0 0 24 24" width="18" height="18" fill="none">
                 <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"
                   stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span>{{ starting ? '启动中…' : '启动 WebRPA' }}</span>
+              <span>{{ isStarting ? '启动中…' : '启动 WebRPA' }}</span>
             </button>
             <button v-else class="cta-success" @click="openBrowser">
               <span class="cta-glow"></span>
@@ -194,8 +194,8 @@
             <div class="service-text">
               <div class="service-name">后端 API 服务</div>
               <div class="service-meta">
-                <span class="service-state-dot" :class="{ on: backendRunning }"></span>
-                <span class="service-state-text">{{ backendRunning ? '运行中' : '未启动' }}</span>
+                <span class="service-state-dot" :class="{ on: backendRunning, starting: !backendRunning && isStarting }"></span>
+                <span class="service-state-text">{{ backendStateText }}</span>
                 <span class="service-divider">·</span>
                 <code class="service-port">{{ configForm.backend.host }}:{{ configForm.backend.port }}</code>
               </div>
@@ -215,8 +215,8 @@
             <div class="service-text">
               <div class="service-name">前端 Web 编辑器</div>
               <div class="service-meta">
-                <span class="service-state-dot" :class="{ on: frontendRunning }"></span>
-                <span class="service-state-text">{{ frontendRunning ? '运行中' : '未启动' }}</span>
+                <span class="service-state-dot" :class="{ on: frontendRunning, starting: !frontendRunning && isStarting }"></span>
+                <span class="service-state-text">{{ frontendStateText }}</span>
                 <span class="service-divider">·</span>
                 <code class="service-port">{{ configForm.frontend.host }}:{{ configForm.frontend.port }}</code>
               </div>
@@ -724,6 +724,9 @@ const version = ref('')
 const checking = ref(false)
 const updateInfo = ref(null)
 const starting = ref(false)
+// 启动后的最小锁定（10 秒内即使发生异常也不让"启动"按钮恢复可点，避免慢电脑上用户误以为失败而重复点击）
+const startLocked = ref(false)
+let startLockTimer = null
 const backendRunning = ref(false)
 const frontendRunning = ref(false)
 const showSponsorModal = ref(false)
@@ -793,20 +796,32 @@ const showToast = (message, type = 'info', duration = 2500) => {
 
 const overallStatusText = computed(() => {
   if (backendRunning.value && frontendRunning.value) return '全部就绪'
+  if (isStarting.value) return '启动中'
   if (backendRunning.value || frontendRunning.value) return '部分运行'
   return '未启动'
 })
 const overallStatusSub = computed(() => {
   if (backendRunning.value && frontendRunning.value) return '后端和前端服务均已运行'
+  if (isStarting.value) {
+    if (frontendRunning.value && !backendRunning.value) return '前端已就绪，后端正在启动中（首次启动较慢，请耐心等待）'
+    if (backendRunning.value && !frontendRunning.value) return '后端已就绪，前端正在启动中…'
+    return '正在启动后端与前端服务，请稍候…'
+  }
   if (backendRunning.value && !frontendRunning.value) return '前端服务尚未运行'
   if (!backendRunning.value && frontendRunning.value) return '后端服务尚未运行'
   return '点击下方按钮启动 WebRPA'
 })
 const bigStatusClass = computed(() => {
   if (backendRunning.value && frontendRunning.value) return 'status-success'
+  if (isStarting.value) return 'status-warn'
   if (backendRunning.value || frontendRunning.value) return 'status-warn'
   return 'status-idle'
 })
+// 是否处于启动过程中（启动中 或 10 秒最小锁定内）
+const isStarting = computed(() => starting.value || startLocked.value)
+// 单个服务的状态文案：运行中 / 启动中 / 未启动
+const backendStateText = computed(() => backendRunning.value ? '运行中' : (isStarting.value ? '启动中' : '未启动'))
+const frontendStateText = computed(() => frontendRunning.value ? '运行中' : (isStarting.value ? '启动中' : '未启动'))
 
 // 标题栏控制
 const minimize = async () => {
@@ -894,6 +909,10 @@ async function waitFor(predicate, maxIter, intervalMs, beforeCheck) {
 
 const startServices = async () => {
   starting.value = true
+  // 启动后至少锁定 10 秒，期间按钮保持"启动中"不可点，避免慢电脑上用户误以为失败而重复点击
+  startLocked.value = true
+  if (startLockTimer) clearTimeout(startLockTimer)
+  startLockTimer = setTimeout(() => { startLocked.value = false }, 10000)
   try {
     await checkServiceStatus()
     const needBackend = !backendRunning.value
@@ -1757,6 +1776,16 @@ body {
 @keyframes dot-pulse {
   0%, 100% { box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
   50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.05); }
+}
+/* 启动中：琥珀色脉冲，提示服务正在启动 */
+.service-state-dot.starting {
+  background: var(--c-amber-500, #f59e0b);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+  animation: dot-pulse-amber 1.1s ease-in-out infinite;
+}
+@keyframes dot-pulse-amber {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25); }
+  50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.05); }
 }
 .service-state-text { font-weight: 600; color: var(--c-text-3); }
 .service-card.active .service-state-text { color: var(--c-green-700); }
