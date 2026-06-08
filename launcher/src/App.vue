@@ -93,13 +93,6 @@
             </svg>
             <span>支持作者</span>
           </button>
-          <button class="chip-btn chip-btn-amber" @click="showHire = true">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="7" width="20" height="14" rx="2"/>
-              <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
-            </svg>
-            <span>外包开发</span>
-          </button>
         </div>
       </section>
 
@@ -687,6 +680,15 @@
         </div>
       </div>
     </transition>
+
+    <!-- 右下角浮动：外包开发入口 -->
+    <button class="hire-fab" @click="showHire = true" title="外包开发 · 找作者接需求">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="7" width="20" height="14" rx="2"/>
+        <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+      </svg>
+      <span>外包开发</span>
+    </button>
 
     <!-- Toast -->
     <transition name="toast">
@@ -2110,6 +2112,34 @@ body {
   background: var(--c-blue-100, #dbeafe);
   color: var(--c-blue-700);
 }
+
+/* 右下角浮动「外包开发」入口（蓝色主题，与启动器一致） */
+.hire-fab {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 15px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--c-blue-500, #3b82f6), var(--c-blue-600, #2563eb));
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+  transition: transform 0.18s cubic-bezier(0.25,1,0.5,1), box-shadow 0.18s ease, filter 0.18s ease;
+}
+.hire-fab svg { stroke: #fff; }
+.hire-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.45);
+  filter: brightness(1.04);
+}
+.hire-fab:active { transform: translateY(0) scale(0.97); }
 
 /* ============================================================
    接单广告弹窗（蓝色主题，与启动器整体一致）
