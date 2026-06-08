@@ -667,7 +667,7 @@
     </transition>
 
     <!-- 右下角浮动：外包开发入口 -->
-    <button class="hire-fab" @click="showHire = true" title="外包开发 · 找作者接需求">
+    <button class="hire-fab" @click="showHire = true" data-tip="外包开发 · 找作者接需求">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="7" width="20" height="14" rx="2"/>
         <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
@@ -2167,6 +2167,30 @@ body {
   filter: brightness(1.04);
 }
 .hire-fab:active { transform: translateY(0) scale(0.97); }
+/* 主题化悬停提示：单行不换行、贴按钮右缘向上展开，绝不越出屏幕或一字一行 */
+.hire-fab::after {
+  content: attr(data-tip);
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  white-space: nowrap;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: #fff;
+  background: linear-gradient(135deg, #12b7f5 0%, #2086e8 50%, #1a4fc4 100%);
+  padding: 5px 9px;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(18,183,245,0.32), 0 8px 24px rgba(26,79,196,0.18);
+  opacity: 0;
+  transform: translateY(4px) scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.14s ease, transform 0.18s cubic-bezier(0.34,1.56,0.64,1);
+}
+.hire-fab:hover::after {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
 
 /* ============================================================
    接单广告弹窗（蓝色主题，与启动器整体一致）
