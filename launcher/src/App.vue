@@ -144,7 +144,7 @@
               v-if="!backendRunning || !frontendRunning"
               class="cta-primary"
               @click="startServices"
-              :disabled="starting || startLocked"
+              :disabled="starting || startLocked || stopping"
             >
               <span class="cta-glow"></span>
               <svg v-if="!isStarting" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
@@ -167,12 +167,16 @@
             <button
               class="cta-stop"
               @click="stopServices"
-              :disabled="!backendRunning && !frontendRunning"
+              :disabled="stopping || (!backendRunning && !frontendRunning)"
             >
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+              <svg v-if="stopping" class="rotating" viewBox="0 0 24 24" width="14" height="14" fill="none">
+                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"
+                  stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg v-else viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
                 <rect x="6" y="6" width="12" height="12" rx="1"/>
               </svg>
-              <span>停止</span>
+              <span>{{ stopping ? '停止中…' : '停止' }}</span>
             </button>
           </div>
         </div>
@@ -705,6 +709,8 @@ const version = ref('')
 const checking = ref(false)
 const updateInfo = ref(null)
 const starting = ref(false)
+// 停止过程中（点击停止 → 确认完全停止前），用于显示“停止中”反馈
+const stopping = ref(false)
 // 启动后的最小锁定（10 秒内即使发生异常也不让"启动"按钮恢复可点，避免慢电脑上用户误以为失败而重复点击）
 const startLocked = ref(false)
 let startLockTimer = null
@@ -776,12 +782,14 @@ const showToast = (message, type = 'info', duration = 2500) => {
 }
 
 const overallStatusText = computed(() => {
+  if (stopping.value) return '停止中'
   if (backendRunning.value && frontendRunning.value) return '全部就绪'
   if (isStarting.value) return '启动中'
   if (backendRunning.value || frontendRunning.value) return '部分运行'
   return '未启动'
 })
 const overallStatusSub = computed(() => {
+  if (stopping.value) return '正在停止后端与前端服务，请稍候…'
   if (backendRunning.value && frontendRunning.value) return '后端和前端服务均已运行'
   if (isStarting.value) {
     if (frontendRunning.value && !backendRunning.value) return '前端已就绪，后端正在启动中（首次启动较慢，请耐心等待）'
@@ -793,6 +801,7 @@ const overallStatusSub = computed(() => {
   return '点击下方按钮启动 WebRPA'
 })
 const bigStatusClass = computed(() => {
+  if (stopping.value) return 'status-warn'
   if (backendRunning.value && frontendRunning.value) return 'status-success'
   if (isStarting.value) return 'status-warn'
   if (backendRunning.value || frontendRunning.value) return 'status-warn'
@@ -800,9 +809,9 @@ const bigStatusClass = computed(() => {
 })
 // 是否处于启动过程中（启动中 或 10 秒最小锁定内）
 const isStarting = computed(() => starting.value || startLocked.value)
-// 单个服务的状态文案：运行中 / 启动中 / 未启动
-const backendStateText = computed(() => backendRunning.value ? '运行中' : (isStarting.value ? '启动中' : '未启动'))
-const frontendStateText = computed(() => frontendRunning.value ? '运行中' : (isStarting.value ? '启动中' : '未启动'))
+// 单个服务的状态文案：运行中 / 停止中 / 启动中 / 未启动
+const backendStateText = computed(() => stopping.value && backendRunning.value ? '停止中' : (backendRunning.value ? '运行中' : (isStarting.value ? '启动中' : '未启动')))
+const frontendStateText = computed(() => stopping.value && frontendRunning.value ? '停止中' : (frontendRunning.value ? '运行中' : (isStarting.value ? '启动中' : '未启动')))
 
 // 标题栏控制
 const minimize = async () => {
@@ -929,14 +938,22 @@ const startServices = async () => {
 }
 
 const stopServices = async () => {
+  if (stopping.value) return
+  stopping.value = true
   try {
     await invoke('stop_services')
+    // 轮询确认确实已停止，期间界面持续显示“停止中”，避免“卡住无反应突然就停了”
+    for (let i = 0; i < 12; i++) {
+      await new Promise(r => setTimeout(r, 400))
+      await checkServiceStatus()
+      if (!backendRunning.value && !frontendRunning.value) break
+    }
     showToast('服务已停止', 'info')
-    await new Promise(r => setTimeout(r, 800))
-    await checkServiceStatus()
   } catch (error) {
     showToast(`停止失败: ${error}`, 'error')
     await checkServiceStatus()
+  } finally {
+    stopping.value = false
   }
 }
 
