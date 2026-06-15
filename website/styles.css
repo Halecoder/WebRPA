@@ -400,7 +400,7 @@ svg.ic { fill: none; stroke: currentColor; }
 .footer__col a:hover { color: var(--brand-300); }
 .footer__bottom { display: flex; justify-content: space-between; align-items: center; gap: 12px 20px; flex-wrap: wrap; padding-top: 24px; border-top: 1px solid var(--stroke); }
 .footer__bottom p { color: var(--text-3); font-size: 13px; }
-.footer__disclaimer { flex-basis: 100%; max-width: 760px; opacity: .8; }
+.footer__disclaimer { flex-basis: 100%; max-width: 760px; margin: 0 auto; text-align: center; opacity: .8; }
 
 /* ===== 回到顶部 ===== */
 .totop { position: fixed; right: 24px; bottom: 24px; z-index: 90; width: 46px; height: 46px; border-radius: 50%;
