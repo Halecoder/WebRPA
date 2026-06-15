@@ -149,7 +149,8 @@
     } else { startAuto(); }
   }
 
-  /* ---------- 年份兜底（页脚） ---------- */
-  // 静态站点，保持简单，无需额外逻辑
+  /* ---------- 页脚年份自动更新 ---------- */
+  var yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
 })();

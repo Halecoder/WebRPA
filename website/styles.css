@@ -274,6 +274,9 @@ svg.ic { fill: none; stroke: currentColor; }
 .ic-sky { background: linear-gradient(135deg, #0284c7, #38bdf8); }
 .ic-indigo { background: linear-gradient(135deg, #4f46e5, #6366f1); }
 .ic-teal { background: linear-gradient(135deg, #0d9488, #14b8a6); }
+.ic-orange { background: linear-gradient(135deg, #ea580c, #fb923c); }
+.ic-fuchsia { background: linear-gradient(135deg, #a21caf, #e879f9); }
+.ic-green { background: linear-gradient(135deg, #16a34a, #4ade80); }
 .card h3 { font-size: 18px; font-weight: 700; margin-bottom: 9px; }
 .card p { color: var(--text-2); font-size: 14.5px; }
 
@@ -347,9 +350,10 @@ svg.ic { fill: none; stroke: currentColor; }
 .techbadge span { font-size: 12.5px; color: var(--text-3); }
 
 /* ===== 授权 ===== */
-.plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; }
-.plan { position: relative; padding: 32px 28px; border-radius: var(--radius-lg);
+.plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+.plan { position: relative; display: flex; flex-direction: column; padding: 32px 28px; border-radius: var(--radius-lg);
   background: var(--surface); border: 1px solid var(--stroke); transition: .3s var(--ease); }
+.plan .btn { margin-top: auto; }
 .plan:hover { transform: translateY(-5px); border-color: var(--stroke-strong); }
 .plan--featured { background: linear-gradient(180deg, rgba(37,99,235,0.14), rgba(255,255,255,0.04));
   border-color: rgba(59,130,246,0.5); box-shadow: var(--shadow-glow); }
@@ -384,7 +388,7 @@ svg.ic { fill: none; stroke: currentColor; }
 .cta__box h2 { position: relative; font-size: clamp(26px, 3.6vw, 40px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 14px; }
 .cta__box > p { position: relative; color: var(--text-2); font-size: 17px; max-width: 560px; margin: 0 auto 28px; }
 .cta__actions { position: relative; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-.cta__hint { position: relative; margin-top: 18px; color: var(--text-3); font-size: 13.5px; }
+.cta__hint { position: relative; margin-top: 30px; color: var(--text-3); font-size: 13.5px; }
 
 /* ===== 页脚 ===== */
 .footer { border-top: 1px solid var(--stroke); padding: 60px 0 30px; margin-top: 40px; background: rgba(0,0,0,0.2); }
@@ -394,9 +398,9 @@ svg.ic { fill: none; stroke: currentColor; }
 .footer__col h4 { font-size: 14px; font-weight: 700; margin-bottom: 14px; color: var(--text); }
 .footer__col a, .footer__muted { display: block; color: var(--text-3); font-size: 14px; padding: 5px 0; transition: color .2s; }
 .footer__col a:hover { color: var(--brand-300); }
-.footer__bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 24px; border-top: 1px solid var(--stroke); }
+.footer__bottom { display: flex; justify-content: space-between; align-items: center; gap: 12px 20px; flex-wrap: wrap; padding-top: 24px; border-top: 1px solid var(--stroke); }
 .footer__bottom p { color: var(--text-3); font-size: 13px; }
-.footer__disclaimer { max-width: 560px; opacity: .8; }
+.footer__disclaimer { flex-basis: 100%; max-width: 760px; opacity: .8; }
 
 /* ===== 回到顶部 ===== */
 .totop { position: fixed; right: 24px; bottom: 24px; z-index: 90; width: 46px; height: 46px; border-radius: 50%;
@@ -459,6 +463,20 @@ svg.ic { fill: none; stroke: currentColor; }
 .card h3, .modcat b, .step h3 { font-family: var(--font-display); }
 .card p, .modcat span { line-height: 1.65; }
 .eyebrow { letter-spacing: 0.14em; }
+
+/* Hero 高亮文字流光 */
+.grad-text--anim {
+  background: linear-gradient(110deg, var(--brand-400), var(--cyan), var(--brand-400));
+  background-size: 220% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: shimmer 5s linear infinite;
+}
+@keyframes shimmer { to { background-position: 220% center; } }
+
+/* 页脚 ICP */
+.footer__icp a { color: var(--text-3); font-size: 13px; transition: color .2s; }
+.footer__icp a:hover { color: var(--brand-300); }
 
 /* ===== 响应式 ===== */
 @media (max-width: 980px) {
