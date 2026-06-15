@@ -388,7 +388,7 @@ svg.ic { fill: none; stroke: currentColor; }
 .cta__box h2 { position: relative; font-size: clamp(26px, 3.6vw, 40px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 14px; }
 .cta__box > p { position: relative; color: var(--text-2); font-size: 17px; max-width: 560px; margin: 0 auto 28px; }
 .cta__actions { position: relative; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-.cta__hint { position: relative; margin-top: 42px; color: var(--text-3); font-size: 13.5px; }
+.cta__hint { position: relative; margin-top: 56px; color: var(--text-3); font-size: 13.5px; }
 
 /* ===== 页脚 ===== */
 .footer { border-top: 1px solid var(--stroke); padding: 60px 0 30px; margin-top: 40px; background: rgba(0,0,0,0.2); }
