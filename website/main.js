@@ -121,6 +121,34 @@
     } else { playChat(); }
   }
 
+  /* ---------- 界面截图切换 + 自动轮播 ---------- */
+  var shot = document.querySelector('.shot');
+  if (shot) {
+    var imgs = Array.prototype.slice.call(shot.querySelectorAll('.shot__img'));
+    var thumbs = Array.prototype.slice.call(shot.querySelectorAll('.shot__thumb'));
+    var cur = 0, timer = null;
+    function setShot(i) {
+      if (i === cur) return;
+      cur = i;
+      imgs.forEach(function (m, k) { m.classList.toggle('is-active', k === i); });
+      thumbs.forEach(function (t, k) { t.classList.toggle('is-active', k === i); });
+    }
+    function nextShot() { setShot((cur + 1) % imgs.length); }
+    function startAuto() { if (!prefersReduced && !timer) timer = setInterval(nextShot, 4200); }
+    function stopAuto() { if (timer) { clearInterval(timer); timer = null; } }
+    thumbs.forEach(function (t) {
+      t.addEventListener('click', function () { setShot(parseInt(t.getAttribute('data-i'), 10) || 0); stopAuto(); startAuto(); });
+    });
+    shot.addEventListener('mouseenter', stopAuto);
+    shot.addEventListener('mouseleave', startAuto);
+    if ('IntersectionObserver' in window) {
+      var io4 = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) startAuto(); else stopAuto(); });
+      }, { threshold: 0.25 });
+      io4.observe(shot);
+    } else { startAuto(); }
+  }
+
   /* ---------- 年份兜底（页脚） ---------- */
   // 静态站点，保持简单，无需额外逻辑
 
